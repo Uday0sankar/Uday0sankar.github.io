@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Test - Monkeytype Style</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        #container {
+            text-align: center;
+        }
+        #text-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .correct { color: #00ff00; }
+        .incorrect { color: #ff0000; }
+        .current { background: rgba(255, 255, 255, 0.2); }
+        #input-field {
+            font-size: 24px;
+            padding: 10px;
+            width: 600px;
+            background: #2a2a2a;
+            border: none;
+            color: #fff;
+            outline: none;
+            border-radius: 5px;
+        }
+        #stats {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #reset-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #reset-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="text-display"></div>
+        <input type="text" id="input-field" autofocus>
+        <div id="stats">
+            <p>Time: <span id="timer">30</span>s</p>
+            <p>WPM: <span id="wpm">0</span></p>
+            <p>Accuracy: <span id="accuracy">0</span>%</p>
+            <p>High Score: <span id="high-score">0</span> WPM</p>
+        </div>
+        <button id="reset-btn" onclick="resetTest()">Reset</button>
+    </div>
+
+    <script>
+        const textDisplay = document.getElementById('text-display');
+        const inputField = document.getElementById('input-field');
+        const timerDisplay = document.getElementById('timer');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const highScoreDisplay = document.getElementById('high-score');
+
+        const sampleTexts = [
+            "the quick brown fox jumps over the lazy dog",
+            "a journey of a thousand miles begins with a single step",
+            "to be or not to be that is the question",
+            "all that glitters is not gold",
+            "the early bird catches the worm"
+        ];
+
+        let currentText = '';
+        let timeLeft = 30;
+        let timer = null;
+        let isTestRunning = false;
+        let charIndex = 0;
+        let correctChars = 0;
+        let totalCharsTyped = 0;
+
+        // Load high score
+        let highScore = localStorage.getItem('typingHighScore') || 0;
+        highScoreDisplay.textContent = highScore;
+
+        function startTest() {
+            if (!isTestRunning) {
+                isTestRunning = true;
+                currentText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
+                renderText();
+                inputField.value = '';
+                charIndex = 0;
+                correctChars = 0;
+                totalCharsTyped = 0;
+
+                timer = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        endTest();
+                    }
+                }, 1000);
+            }
+        }
+
+        function renderText() {
+            textDisplay.innerHTML = '';
+            currentText.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                if (index < charIndex) {
+                    span.classList.add(inputField.value[index] === char ? 'correct' : 'incorrect');
+                } else if (index === charIndex) {
+                    span.classList.add('current');
+                }
+                textDisplay.appendChild(span);
+            });
+        }
+
+        function endTest() {
+            clearInterval(timer);
+            isTestRunning = false;
+            inputField.disabled = true;
+
+            // Calculate WPM (words per minute)
+            const timeElapsed = 30 - timeLeft;
+            const wpm = Math.round((correctChars / 5) / (timeElapsed / 60));
+            wpmDisplay.textContent = wpm;
+
+            // Calculate accuracy
+            const accuracy = totalCharsTyped > 0 ? Math.round((correctChars / totalCharsTyped) * 100) : 0;
+            accuracyDisplay.textContent = accuracy;
+
+            // Update high score
+            if (wpm > highScore) {
+                highScore = wpm;
+                highScoreDisplay.textContent = highScore;
+                localStorage.setItem('typingHighScore', highScore);
+            }
+        }
+
+        function resetTest() {
+            clearInterval(timer);
+            timeLeft = 30;
+            timerDisplay.textContent = timeLeft;
+            wpmDisplay.textContent = '0';
+            accuracyDisplay.textContent = '0';
+            inputField.value = '';
+            textDisplay.innerHTML = '';
+            inputField.disabled = false;
+            isTestRunning = false;
+            charIndex = 0;
+        }
+
+        inputField.addEventListener('input', (e) => {
+            if (!isTestRunning) startTest();
+
+            const typed = e.target.value;
+            charIndex = typed.length;
+            totalCharsTyped++;
+
+            if (charIndex <= currentText.length) {
+                if (currentText[charIndex - 1] === typed[charIndex - 1]) {
+                    correctChars++;
+                }
+                renderText();
+            }
+
+            if (charIndex === currentText.length) {
+                endTest();
+            }
+        });
+
+        // Initial render
+        resetTest();
+    </script>
+</body>
+</html>
