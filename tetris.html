@@ -7,6 +7,353 @@
     <style>
         body {
             font-family: 'Courier New', monospace;
+            background: #0D1117;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+            gap: 1px;
+            background: #30363D;
+            border: 2px solid #30363D;
+            width: 100%;
+            aspect-ratio: 10 / 20;
+            max-width: 300px;
+        }
+        .cell {
+            width: 100%;
+            height: 100%;
+        }
+        .cell.empty {
+            background: #0D1117;
+        }
+        .cell.I { background: #238636; }
+        .cell.O { background: #2ea043; }
+        .cell.T { background: #3fb950; }
+        .cell.S { background: #56d364; }
+        .cell.Z { background: #79f2a3; }
+        .cell.J { background: #9ffbb3; }
+        .cell.L { background: #c2ffc3; }
+        #score {
+            margin: 20px 0;
+            font-size: 24px;
+            padding: 10px;
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+            max-width: 300px;
+        }
+        #controls {
+            display: grid;
+            grid-template-areas: 
+                ". up ."
+                "left down right"
+                ". rotate ."
+                ". drop .";
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #238636;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        button:active {
+            background: #1c6e2d;
+        }
+        #up { grid-area: up; }
+        #left { grid-area: left; }
+        #down { grid-area: down; }
+        #right { grid-area: right; }
+        #rotate { grid-area: rotate; }
+        #drop { grid-area: drop; }
+
+        @media (min-width: 600px) {
+            #controls {
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <div id="board"></div>
+        <div id="score">Score: 0</div>
+        <div id="controls">
+            <button id="up">↑</button>
+            <button id="left">←</button>
+            <button id="down">↓</button>
+            <button id="right">→</button>
+            <button id="rotate">↻</button>
+            <button id="drop">⇓</button>
+        </div>
+    </div>
+    <script>
+        const boardEl = document.getElementById('board');
+        const scoreEl = document.getElementById('score');
+
+        const ROWS = 20;
+        const COLS = 10;
+
+        // Create board grid
+        for (let i = 0; i < ROWS * COLS; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell empty';
+            boardEl.appendChild(cell);
+        }
+        const cells = boardEl.querySelectorAll('.cell');
+
+        // Tetromino shapes
+        const tetrominoes = {
+            'I': [
+                [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]],
+                [[0,0,1,0], [0,0,1,0], [0,0,1,0], [0,0,1,0]],
+                [[0,0,0,0], [0,0,0,0], [1,1,1,1], [0,0,0,0]],
+                [[0,1,0,0], [0,1,0,0], [0,1,0,0], [0,1,0,0]]
+            ],
+            'O': [
+                [[0,1,1,0], [0,1,1,0], [0,0,0,0], [0,0,0,0]]
+            ],
+            'T': [
+                [[0,1,0,0], [1,1,1,0], [0,0,0,0], [0,0,0,0]],
+                [[0,1,0,0], [0,1,1,0], [0,1,0,0], [0,0,0,0]],
+                [[0,0,0,0], [1,1,1,0], [0,1,0,0], [0,0,0,0]],
+                [[0,1,0,0], [1,1,0,0], [0,1,0,0], [0,0,0,0]]
+            ],
+            'S': [
+                [[0,1,1,0], [1,1,0,0], [0,0,0,0], [0,0,0,0]],
+                [[0,1,0,0], [0,1,1,0], [0,0,1,0], [0,0,0,0]],
+                [[0,0,0,0], [0,1,1,0], [1,1,0,0], [0,0,0,0]],
+                [[1,0,0,0], [1,1,0,0], [0,1,0,0], [0,0,0,0]]
+            ],
+            'Z': [
+                [[1,1,0,0], [0,1,1,0], [0,0,0,0], [0,0,0,0]],
+                [[0,0,1,0], [0,1,1,0], [0,1,0,0], [0,0,0,0]],
+                [[0,0,0,0], [1,1,0,0], [0,1,1,0], [0,0,0,0]],
+                [[0,1,0,0], [1,1,0,0], [1,0,0,0], [0,0,0,0]]
+            ],
+            'J': [
+                [[1,0,0,0], [1,1,1,0], [0,0,0,0], [0,0,0,0]],
+                [[0,1,1,0], [0,1,0,0], [0,1,0,0], [0,0,0,0]],
+                [[0,0,0,0], [1,1,1,0], [0,0,1,0], [0,0,0,0]],
+                [[0,1,0,0], [0,1,0,0], [1,1,0,0], [0,0,0,0]]
+            ],
+            'L': [
+                [[0,0,1,0], [1,1,1,0], [0,0,0,0], [0,0,0,0]],
+                [[0,1,0,0], [0,1,0,0], [0,1,1,0], [0,0,0,0]],
+                [[0,0,0,0], [1,1,1,0], [1,0,0,0], [0,0,0,0]],
+                [[1,1,0,0], [0,1,0,0], [0,1,0,0], [0,0,0,0]]
+            ]
+        };
+
+        const typeMap = { 'I': 1, 'O': 2, 'T': 3, 'S': 4, 'Z': 5, 'J': 6, 'L': 7 };
+        const reverseTypeMap = ['empty', 'I', 'O', 'T', 'S', 'Z', 'J', 'L'];
+
+        // Game state
+        const board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+        let currentPiece;
+        let score = 0;
+        let gameOver = false;
+
+        // Piece bag
+        let bag = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        shuffle(bag);
+
+        // Collision detection
+        function canMove(dx, dy, rotation = currentPiece.rotation) {
+            const matrix = tetrominoes[currentPiece.type][rotation];
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    if (matrix[i][j]) {
+                        const newX = currentPiece.x + j + dx;
+                        const newY = currentPiece.y + i + dy;
+                        if (newX < 0 || newX >= COLS || newY >= ROWS || (newY >= 0 && board[newY][newX])) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Render the board
+        function render() {
+            cells.forEach((cell, index) => {
+                const row = Math.floor(index / COLS);
+                const col = index % COLS;
+                cell.className = `cell ${reverseTypeMap[board[row][col]]}`;
+            });
+            const matrix = tetrominoes[currentPiece.type][currentPiece.rotation];
+            for (let dy = 0; dy < 4; dy++) {
+                for (let dx = 0; dx < 4; dx++) {
+                    if (matrix[dy][dx]) {
+                        const boardX = currentPiece.x + dx;
+                        const boardY = currentPiece.y + dy;
+                        if (boardY >= 0 && boardY < ROWS && boardX >= 0 && boardX < COLS) {
+                            const index = boardY * COLS + boardX;
+                            cells[index].className = `cell ${currentPiece.type}`;
+                        }
+                    }
+                }
+            }
+            scoreEl.textContent = `Score: ${score}`;
+        }
+
+        // Movement functions
+        function moveLeft() {
+            if (canMove(-1, 0)) currentPiece.x--;
+            render();
+        }
+
+        function moveRight() {
+            if (canMove(1, 0)) currentPiece.x++;
+            render();
+        }
+
+        function moveDown() {
+            if (canMove(0, 1)) {
+                currentPiece.y++;
+            } else {
+                lockPiece();
+                spawnPiece();
+            }
+            render();
+        }
+
+        function rotate() {
+            const newRotation = (currentPiece.rotation + 1) % tetrominoes[currentPiece.type].length;
+            if (canMove(0, 0, newRotation)) {
+                currentPiece.rotation = newRotation;
+            }
+            render();
+        }
+
+        function hardDrop() {
+            while (canMove(0, 1)) {
+                currentPiece.y++;
+            }
+            lockPiece();
+            spawnPiece();
+            render();
+        }
+
+        // Lock piece and clear lines
+        function lockPiece() {
+            const matrix = tetrominoes[currentPiece.type][currentPiece.rotation];
+            for (let dy = 0; dy < 4; dy++) {
+                for (let dx = 0; dx < 4; dx++) {
+                    if (matrix[dy][dx]) {
+                        const boardX = currentPiece.x + dx;
+                        const boardY = currentPiece.y + dy;
+                        if (boardY >= 0 && boardY < ROWS && boardX >= 0 && boardX < COLS) {
+                            board[boardY][boardX] = typeMap[currentPiece.type];
+                        }
+                    }
+                }
+            }
+            for (let row = ROWS - 1; row >= 0; row--) {
+                if (board[row].every(cell => cell !== 0)) {
+                    board.splice(row, 1);
+                    board.unshift(Array(COLS).fill(0));
+                    score += 100;
+                }
+            }
+        }
+
+        // Spawn new piece
+        function spawnPiece() {
+            if (bag.length === 0) {
+                bag = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
+                shuffle(bag);
+            }
+            currentPiece = {
+                type: bag.pop(),
+                rotation: 0,
+                x: Math.floor(COLS / 2) - 2,
+                y: 0
+            };
+            if (!canMove(0, 0)) {
+                gameOver = true;
+                clearInterval(gameLoop);
+                alert('Game Over! Score: ' + score);
+            }
+        }
+
+        // Controls setup
+        document.getElementById('left').addEventListener('click', moveLeft);
+        document.getElementById('right').addEventListener('click', moveRight);
+        document.getElementById('down').addEventListener('click', moveDown);
+        document.getElementById('up').addEventListener('click', rotate);
+        document.getElementById('rotate').addEventListener('click', rotate);
+        document.getElementById('drop').addEventListener('click', hardDrop);
+
+        // Keyboard controls (still available for desktop)
+        document.addEventListener('keydown', (e) => {
+            if (gameOver) return;
+            switch (e.key) {
+                case 'ArrowLeft': moveLeft(); break;
+                case 'ArrowRight': moveRight(); break;
+                case 'ArrowDown': moveDown(); break;
+                case 'ArrowUp': rotate(); break;
+                case ' ': e.preventDefault(); hardDrop(); break;
+            }
+        });
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Start the game
+        spawnPiece();
+        render();
+        const gameLoop = setInterval(() => {
+            if (!gameOver) moveDown();
+        }, 1000);
+    </script>
+</body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris - GitHub Theme</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
             background: #0D1117; /* GitHub dark background */
             color: #FFFFFF; /* GitHub white text */
             display: flex;
@@ -274,4 +621,4 @@
         }, 1000); // Drop every second
     </script>
 </body>
-</html>
+</html> -->
