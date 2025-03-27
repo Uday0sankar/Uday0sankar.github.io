@@ -64,28 +64,24 @@
         a:hover {
             text-shadow: 0 0 5px #58a6ff;
         }
-
         nav {
-    margin-top: 10px;
-}
-nav a {
-    color: #58a6ff;
-    text-decoration: none;
-    margin: 0 10px;
-    font-size: 1.2em;
-    font-weight: bold;
-    transition: text-shadow 0.3s ease;
-}
-nav a:hover {
-    text-shadow: 0 0 8px #58a6ff;
-}
-nav span {
-    color: #8b949e; /* Light gray separator */
-    font-weight: bold;
-}
-
-
-
+            margin-top: 10px;
+        }
+        nav a {
+            color: #58a6ff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: text-shadow 0.3s ease;
+        }
+        nav a:hover {
+            text-shadow: 0 0 8px #58a6ff;
+        }
+        nav span {
+            color: #8b949e; /* Light gray separator */
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +97,19 @@ nav span {
             <span>|</span>
             <a href="https://uday0sankar.github.io/tetris.html" target="_blank">Tetris Game</a>
         </nav>
+        <!-- Google Translate Element -->
+        <div id="google_translate_element"></div>
+        <!-- Google Translate Initialization Script -->
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                    { pageLanguage: 'en' },
+                    'google_translate_element'
+                );
+            }
+        </script>
+        <!-- Google Translate API Script -->
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     </header>
     
     <section>
@@ -138,8 +147,7 @@ nav span {
     </section>
     
     <footer>
-        &copy; 2024 UDAY SANKAR. All rights reserved.
+        © 2024 UDAY SANKAR. All rights reserved.
     </footer>
 </body>
 </html>
-

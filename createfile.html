@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Odoo Module Generator</title>
+    <style>
+        .field-entry { margin: 10px 0; }
+        #fields-container { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h2>Odoo Module Generator</h2>
+    
+    <div>
+        <h3>Module Details</h3>
+        <input type="text" id="moduleName" placeholder="Module Name (e.g., Gym Management)">
+        <input type="text" id="modelName" placeholder="Model Name (e.g., gym.member)">
+        <input type="text" id="description" placeholder="Description">
+    </div>
+
+    <div id="fields-container">
+        <h3>Form Fields</h3>
+        <div id="fields-list"></div>
+        <button onclick="addField()">Add Field</button>
+    </div>
+
+    <button onclick="generateModule()">Generate and Download Module</button>
+
+    <script>
+        let fieldCount = 0;
+
+        function addField() {
+            fieldCount++;
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'field-entry';
+            fieldDiv.innerHTML = `
+                <input type="text" id="fieldName${fieldCount}" placeholder="Field Name (e.g., name)">
+                <select id="fieldType${fieldCount}">
+                    <option value="Char">Text (Char)</option>
+                    <option value="Text">Long Text (Text)</option>
+                    <option value="Date">Date</option>
+                    <option value="Selection">Dropdown (Selection)</option>
+                    <option value="Float">Number (Float)</option>
+                    <option value="Binary">File (Binary)</option>
+                    <option value="Many2one">Reference (Many2one)</option>
+                </select>
+                <input type="text" id="fieldLabel${fieldCount}" placeholder="Label (e.g., Full Name)">
+                <input type="checkbox" id="required${fieldCount}"> Required
+                <button onclick="this.parentElement.remove()">Remove</button>
+            `;
+            document.getElementById('fields-list').appendChild(fieldDiv);
+        }
+
+        function generateModule() {
+            const moduleName = document.getElementById('moduleName').value || 'Custom Module';
+            const modelName = document.getElementById('modelName').value || 'custom.module';
+            const description = document.getElementById('description').value || 'Custom module description';
+
+            // Generate Python model
+            let pythonCode = `from odoo import models, fields, api
+
+class ${capitalize(moduleName.replace(' ', ''))}(models.Model):
+    _name = '${modelName}'
+    _description = '${description}'
+
+`;
+            const fields = document.getElementsByClassName('field-entry');
+            for (let field of fields) {
+                const name = field.querySelector('input[id^="fieldName"]').value;
+                const type = field.querySelector('select').value;
+                const label = field.querySelector('input[id^="fieldLabel"]').value;
+                const required = field.querySelector('input[type="checkbox"]').checked;
+
+                if (name && label) {
+                    let fieldDef = `    ${name} = fields.${type}(string='${label}'`;
+                    if (required) fieldDef += ', required=True';
+                    fieldDef += ')\n';
+                    pythonCode += fieldDef;
+                }
+            }
+
+            // Generate XML views
+            let xmlCode = `<odoo>
+    <data>
+        <record id="view_form_${modelName.replace('.', '_')}" model="ir.ui.view">
+            <field name="name">${modelName}.form</field>
+            <field name="model">${modelName}</field>
+            <field name="arch" type="xml">
+                <form string="${moduleName}">
+                    <sheet>
+                        <group>
+`;
+            for (let field of fields) {
+                const name = field.querySelector('input[id^="fieldName"]').value;
+                if (name) {
+                    xmlCode += `                            <field name="${name}"/>` + '\n';
+                }
+            }
+            xmlCode += `                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_tree_${modelName.replace('.', '_')}" model="ir.ui.view">
+            <field name="name">${modelName}.list</field>
+            <field name="model">${modelName}</field>
+            <field name="arch" type="xml">
+                <list string="${moduleName} List">
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="${modelName.replace('.', '_')}_action" model="ir.actions.act_window">
+            <field name="name">${moduleName}</field>
+            <field name="res_model">${modelName}</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="${modelName.replace('.', '_')}_menu" name="${moduleName}" action="${modelName.replace('.', '_')}_action"/>
+    </data>
+</odoo>`;
+
+            // Generate manifest
+            const manifestCode = `{
+    'name': '${moduleName}',
+    'version': '1.0',
+    'description': '${description}',
+    'depends': ['base'],
+    'data': [
+        'views/${modelName.replace('.', '_')}_views.xml',
+    ],
+    'installable': True,
+    'application': True,
+}`;
+
+            // Create ZIP file
+            const JSZip = window.JSZip || (window.JSZip = require('jszip'));
+            const zip = new JSZip();
+            const moduleFolder = zip.folder(modelName.replace('.', '_'));
+            moduleFolder.file('__init__.py', 'from . import models');
+            moduleFolder.folder('models').file('__init__.py', 'from . import models');
+            moduleFolder.folder('models').file('models.py', pythonCode);
+            moduleFolder.folder('views').file(`${modelName.replace('.', '_')}_views.xml`, xmlCode);
+            moduleFolder.file('__manifest__.py', manifestCode);
+
+            // Generate and download ZIP
+            zip.generateAsync({type: 'blob'}).then(function(content) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = `${modelName.replace('.', '_')}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Add initial field
+        addField();
+
+        // Include JSZip library (you'll need to add this script in production)
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js';
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>
