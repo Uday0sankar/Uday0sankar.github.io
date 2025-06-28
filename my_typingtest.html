@@ -1,6 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Typing Test</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    .joke { font-size: 24px; margin: 20px auto; padding: 20px; max-width: 600px; }
+    .getJoke { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Typing Test</h1>
+  <p>Type the text as you see it below:</p>
+  <div id="content" style="color:blue;" class="joke">Loading...</div>
+  <button class="getJoke">reset</button>
+  <input id="area" class="joke" style="color:red;" oninput="startTyping()" >
+
+</input>
+
+
+  <script>
+    const jokeButton = document.querySelector('.getJoke');
+    const jokeHolder = document.querySelector('.joke');
+
+    async function fetchJoke() {
+      const response = await fetch('https://icanhazdadjoke.com/', {
+        headers: { 'Accept': 'application/json' }
+      });
+      const data = await response.json();
+      return data.joke;
+    }
+
+    async function handleClick() {
+      const joke = await fetchJoke(); 
+      console.log('function :Fetched joke:', joke);
+      console.log('joke length:', joke.length);
+
+      //input field size setting
+
+      if (!isNaN(joke.length) && joke.length > 0) {
+        area.maxLength = joke.length;
+        area.placeholder = `Max ${joke.length} characters`;
+      } else {
+        area.removeAttribute('maxlength');
+        area.placeholder = "Type here...";
+      }
+
+      //jokeHolder.textContent = joke;
+      jokeHolder.innerHTML = joke.split('').map(c => `<span>${c}</span>`).join('');
+
+    }
+
+    function startTyping() {
+      if (document.getElementById('area').value=="" & document.getElementById('area').value.length==0 & document.getElementById('area').value) {
+        console.log('Input field is empty, no typing started');
+        
+      }
+      const startTime = Date.now();
+      console.log('Typing started at:', startTime);
+      console.log("content to type ", jokeHolder.textContent);
+      aim=jokeHolder.textContent;
+     
+      content=document.getElementById('content').value;
+      console.log('text content:', content);
+
+      console.log('User started typing');
+      let Tchar=document.getElementById('area').value;
+      console.log('Length of text:', Tchar.length);
+       
+      console.log('Current text:', Tchar); 
+      console.log('last entered character:', Tchar.slice(-1));
+      console.log('index of last character:', Tchar.indexOf(Tchar.slice(-1)), 'last character:', Tchar.charAt(Tchar.length - 1));
+      enteredCharindex = Tchar.indexOf(Tchar.slice(-1));
+      console.log('enteredCharindex',enteredCharindex)
+      //console.log('index of content:', content.indexOf(Tchar.slice(-1)));
+      lastChar = Tchar.charAt(Tchar.length - 1);
+      console.log('Last character lastChar :', lastChar);       
+      console.log('aim:', aim);
+      console.log('aim index of last character:', aim[enteredCharindex])
+      if (aim[enteredCharindex] === lastChar) {
+        console.log('Correct character entered');
+        console.log("Correct :",jokeHolder.textContent[enteredCharindex], );
+        jokeHolder.children[enteredCharindex].style.color = 'green';
+
+      } else {
+        console.log('Incorrect character entered');
+        console.log("Incorrect :",jokeHolder.textContent[enteredCharindex], );
+        jokeHolder.children[enteredCharindex].style.color = 'red';
+
+      }
+      for (let i = 0; i <Tchar.length; i++) {
+        if (aim[i] === Tchar[i]) {
+          jokeHolder.children[i].style.color = 'green';
+        } else {
+          jokeHolder.children[i].style.color = 'red';
+        }
+      }
+
+    }
+
+    jokeButton.addEventListener('click', handleClick);
+
+    // Load an initial joke
+    handleClick();
+  </script>
+</body>
+</html>
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typing Test - Monkeytype Style</title>
@@ -189,4 +302,4 @@
         resetTest();
     </script>
 </body>
-</html>
+</html> {% endcomment %}
