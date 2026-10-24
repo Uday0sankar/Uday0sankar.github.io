@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QuantPulse — Mental Math Speed Drill</title>
+    <style>
+        :root {
+            --bg-base: #0b0f17;
+            --bg-surface: #131b2e;
+            --bg-elevated: #1c2742;
+            --bg-hover: #253354;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --accent-glow: rgba(56, 189, 248, 0.2);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.14);
+            --danger: #f43f5e;
+            --danger-bg: rgba(244, 63, 94, 0.14);
+            --warning: #f59e0b;
+            --border: #23304d;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Roboto Mono', Consolas, monospace;
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Header / Navbar */
+        header {
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(19, 27, 46, 0.85);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), #6366f1);
+            display: grid;
+            place-items: center;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            color: #fff;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .pill-stat {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-secondary);
+        }
+
+        .pill-stat strong {
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        /* Main container */
+        main {
+            flex: 1;
+            max-width: 1120px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem 1.25rem 3rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Setup View Grid */
+        .setup-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.4rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.25rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.1rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Exam Presets Bar */
+        .presets-bar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .preset-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.45rem 0.85rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+        }
+
+        /* Operations Selector */
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 520px) {
+            .ops-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .op-toggle {
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.9rem 0.6rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .op-toggle:hover {
+            background: var(--bg-hover);
+        }
+
+        .op-toggle.selected {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .op-symbol {
+            font-family: var(--font-mono);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.1;
+        }
+
+        .op-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Form Controls & Layouts */
+        .control-group {
+            margin-bottom: 1.15rem;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .segmented-control {
+            display: flex;
+            background: var(--bg-base);
+            padding: 0.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .seg-btn {
+            flex: 1;
+            min-width: fit-content;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 0.65rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .seg-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .seg-btn.active {
+            background: var(--bg-elevated);
+            color: var(--accent);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .range-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-top: 0.6rem;
+        }
+
+        @media (max-width: 500px) {
+            .range-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .range-box {
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+        }
+
+        .range-box-title {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .preset-pills {
+            display: flex;
+            gap: 0.35rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .mini-pill {
+            flex: 1;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            padding: 0.28rem 0.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+        }
+
+        .mini-pill.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .min-max-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .num-input {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.4rem 0.55rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .num-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Switch Toggle */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.55rem 0;
+            border-top: 1px solid rgba(35, 48, 77, 0.5);
+        }
+
+        .toggle-row:first-of-type {
+            border-top: none;
+        }
+
+        .toggle-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toggle-title {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .toggle-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: var(--bg-base);
+            border: 1px solid var(--border);
+            transition: .2s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: .2s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(56, 189, 248, 0.2);
+            border-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+            background-color: var(--accent);
+        }
+
+        /* Start Drill Button */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), #2563eb);
+            color: #fff;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.45);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 0.65rem 1.1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--text-muted);
+        }
+
+        /* Arena / Gameplay View */
+        .arena-wrapper {
+            max-width: 760px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .hud-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 600px) {
+            .hud-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .hud-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .hud-value {
+            font-family: var(--font-mono);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0.1rem;
+        }
+
+        .hud-value.accent {
+            color: var(--accent);
+        }
+
+        /* Progress Bar */
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-surface);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #818cf8);
+            width: 100%;
+            transition: width 0.15s linear;
+        }
+
+        /* Problem Display Box */
+        .problem-stage {
+            background: var(--bg-surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem 1.5rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .problem-stage.flash-correct {
+            border-color: var(--success);
+            background-color: var(--success-bg);
+        }
+
+        .problem-stage.flash-wrong {
+            border-color: var(--danger);
+            background-color: var(--danger-bg);
+            animation: shake 0.28s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .feedback-banner {
+            min-height: 24px;
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .feedback-banner.show {
+            opacity: 1;
+        }
+
+        .feedback-banner.error {
+            color: var(--danger);
+        }
+
+        .feedback-banner.ok {
+            color: var(--success);
+        }
+
+        .math-expression {
+            font-family: var(--font-mono);
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        .answer-input-wrap {
+            max-width: 340px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .answer-input {
+            width: 100%;
+            background: var(--bg-base);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 0.6rem 1rem;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .answer-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .arena-controls-hint {
+            margin-top: 1.15rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .kbd {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+        }
+
+        /* On-screen Numpad */
+        .numpad-container {
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .num-key {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 0.85rem 0.5rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background 0.1s, transform 0.05s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .num-key:hover {
+            background: var(--bg-elevated);
+        }
+
+        .num-key:active {
+            transform: scale(0.96);
+            background: var(--bg-hover);
+        }
+
+        .num-key.key-action {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .num-key.key-submit {
+            background: var(--accent);
+            color: #0b0f17;
+            font-weight: 700;
+            grid-row: span 2;
+        }
+
+        /* Summary View */
+        .summary-banner {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 720px) {
+            .summary-banner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-card-val {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        .stat-card-lbl {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Mistake Log Table */
+        .table-wrap {
+            overflow-x: auto;
+            max-height: 360px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        td.mono {
+            font-family: var(--font-mono);
+        }
+
+        .badge-wrong {
+            color: var(--danger);
+            background: var(--danger-bg);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-correct {
+            color: var(--success);
+            background: var(--success-bg);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* History List */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+        }
+
+        .history-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .history-mode {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .history-date {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .history-metrics {
+            display: flex;
+            gap: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="brand" id="brandHomeBtn" title="Return to Setup">
+                <div class="brand-icon">∑</div>
+                <div>Quant<span>Pulse</span></div>
+            </div>
+            <div class="header-stats">
+                <div class="pill-stat">
+                    <span>Best QPM:</span>
+                    <strong id="navBestQpm">0.0</strong>
+                </div>
+                <div class="pill-stat">
+                    <span>Best Score:</span>
+                    <strong id="navBestScore">0</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ==================== VIEW 1: SETUP & CONFIGURATION ==================== -->
+        <section id="setupView" class="view active">
+            <!-- Quick Exam Presets -->
+            <div class="presets-bar">
+                <span style="font-size: 0.8rem; color: var(--text-muted); align-self: center; margin-right: 0.3rem;">Quick Exam Presets:</span>
+                <button type="button" class="preset-btn" data-preset="banking">⚡ Banking Prelims (Speed +/−/×)</button>
+                <button type="button" class="preset-btn" data-preset="ssc">🎯 SSC CGL Quant (2-3 Digit Mixed)</button>
+                <button type="button" class="preset-btn" data-preset="decimals">🔬 Decimal Precision Drill</button>
+                <button type="button" class="preset-btn" data-preset="chains">🔗 Multi-Term Chain (A+B−C)</button>
+            </div>
+
+            <div class="setup-grid">
+                <!-- Left Column: Core Drill Settings -->
+                <div>
+                    <!-- 1. Operations Selector -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">1. Arithmetic Operations</div>
+                                <div class="card-subtitle">Select one or multiple operations to mix</div>
+                            </div>
+                            <button type="button" class="btn-secondary" id="selectAllOpsBtn" style="padding: 0.3rem 0.65rem; font-size: 0.76rem;">Select All (Mixed)</button>
+                        </div>
+                        <div class="ops-grid">
+                            <div class="op-toggle selected" data-op="+">
+                                <span class="op-symbol">+</span>
+                                <span class="op-label">Addition</span>
+                            </div>
+                            <div class="op-toggle selected" data-op="-">
+                                <span class="op-symbol">−</span>
+                                <span class="op-label">Subtraction</span>
+                            </div>
+                            <div class="op-toggle selected" data-op="*">
+                                <span class="op-symbol">×</span>
+                                <span class="op-label">Multiplication</span>
+                            </div>
+                            <div class="op-toggle" data-op="/">
+                                <span class="op-symbol">÷</span>
+                                <span class="op-label">Division</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Difficulty & Number Ranges -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">2. Number Bounds & Complexity</div>
+                                <div class="card-subtitle">Customize digit ranges, decimals, and chain length</div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Operand Bounds (Presets or Custom Min/Max)</span>
+                            </div>
+                            <div class="range-row">
+                                <!-- Operand A -->
+                                <div class="range-box">
+                                    <div class="range-box-title">
+                                        <span>First Number (Operand A)</span>
+                                    </div>
+                                    <div class="preset-pills" data-target="A">
+                                        <button type="button" class="mini-pill" data-min="2" data-max="9">1D</button>
+                                        <button type="button" class="mini-pill active" data-min="10" data-max="99">2D</button>
+                                        <button type="button" class="mini-pill" data-min="100" data-max="999">3D</button>
+                                        <button type="button" class="mini-pill" data-min="1000" data-max="9999">4D</button>
+                                    </div>
+                                    <div class="min-max-inputs">
+                                        <input type="number" id="minA" class="num-input" value="10" min="1" max="99999">
+                                        <span style="color: var(--text-muted); font-size: 0.8rem;">to</span>
+                                        <input type="number" id="maxA" class="num-input" value="99" min="1" max="99999">
+                                    </div>
+                                </div>
+
+                                <!-- Operand B / Subsequent -->
+                                <div class="range-box">
+                                    <div class="range-box-title">
+                                        <span>Other Numbers (Operand B+)</span>
+                                    </div>
+                                    <div class="preset-pills" data-target="B">
+                                        <button type="button" class="mini-pill" data-min="2" data-max="9">1D</button>
+                                        <button type="button" class="mini-pill active" data-min="10" data-max="99">2D</button>
+                                        <button type="button" class="mini-pill" data-min="100" data-max="999">3D</button>
+                                        <button type="button" class="mini-pill" data-min="1000" data-max="9999">4D</button>
+                                    </div>
+                                    <div class="min-max-inputs">
+                                        <input type="number" id="minB" class="num-input" value="10" min="1" max="99999">
+                                        <span style="color: var(--text-muted); font-size: 0.8rem;">to</span>
+                                        <input type="number" id="maxB" class="num-input" value="99" min="1" max="99999">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Term Count & Decimal Precision -->
+                        <div class="range-row" style="margin-bottom: 1rem;">
+                            <div class="control-group" style="margin-bottom:0;">
+                                <div class="control-label"><span>Number of Terms (Operands)</span></div>
+                                <div class="segmented-control" id="termCountControl">
+                                    <button type="button" class="seg-btn active" data-terms="2">2 (A∘B)</button>
+                                    <button type="button" class="seg-btn" data-terms="3">3 Terms</button>
+                                    <button type="button" class="seg-btn" data-terms="4">4 Terms</button>
+                                    <button type="button" class="seg-btn" data-terms="5">5 Terms</button>
+                                </div>
+                            </div>
+
+                            <div class="control-group" style="margin-bottom:0;">
+                                <div class="control-label"><span>Decimal Precision</span></div>
+                                <div class="segmented-control" id="decimalControl">
+                                    <button type="button" class="seg-btn active" data-dec="0">Integer</button>
+                                    <button type="button" class="seg-btn" data-dec="1">0.1 (1 dp)</button>
+                                    <button type="button" class="seg-btn" data-dec="2">0.01 (2 dp)</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Toggles -->
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <span class="toggle-title">Allow Negative Answers</span>
+                                <span class="toggle-desc">Permit subtraction results below zero (e.g., 24 − 58 = −34)</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="allowNegativeToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <span class="toggle-title">Instant Auto-Advance on Match</span>
+                                <span class="toggle-desc">Advance immediately when typed input matches answer (no Enter needed)</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoAdvanceToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Game Modes & Recent History -->
+                <div>
+                    <!-- 3. Game Mode Selection -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">3. Training Mode</div>
+                                <div class="card-subtitle">Choose how your drill session is paced</div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="segmented-control" id="gameModeControl">
+                                <button type="button" class="seg-btn active" data-mode="countdown">⏱️ Sprint Timer</button>
+                                <button type="button" class="seg-btn" data-mode="target">🎯 Target Batch</button>
+                                <button type="button" class="seg-btn" data-mode="zen">♾️ Endless Zen</button>
+                            </div>
+                        </div>
+
+                        <!-- Sub-options for Countdown -->
+                        <div id="countdownOptions" class="control-group">
+                            <div class="control-label"><span>Time Limit (Seconds)</span></div>
+                            <div class="segmented-control" id="timeLimitControl">
+                                <button type="button" class="seg-btn" data-time="30">30s</button>
+                                <button type="button" class="seg-btn active" data-time="60">60s</button>
+                                <button type="button" class="seg-btn" data-time="120">120s</button>
+                                <button type="button" class="seg-btn" data-time="300">300s</button>
+                            </div>
+                        </div>
+
+                        <!-- Sub-options for Target Count -->
+                        <div id="targetOptions" class="control-group" style="display: none;">
+                            <div class="control-label"><span>Number of Questions</span></div>
+                            <div class="segmented-control" id="targetCountControl">
+                                <button type="button" class="seg-btn" data-count="10">10 Qs</button>
+                                <button type="button" class="seg-btn active" data-count="20">20 Qs</button>
+                                <button type="button" class="seg-btn" data-count="50">50 Qs</button>
+                                <button type="button" class="seg-btn" data-count="100">100 Qs</button>
+                            </div>
+                        </div>
+
+                        <!-- Sub-options for Zen -->
+                        <div id="zenOptions" class="control-group" style="display: none;">
+                            <p style="font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-base); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                                No countdown pressure. Practice at your own flow and press <strong>End Session</strong> or <span class="kbd">Esc</span> whenever you want to inspect your analytics and Mistake Log.
+                            </p>
+                        </div>
+
+                        <button type="button" class="btn-primary" id="startDrillBtn" style="margin-top: 0.75rem;">
+                            <span>Launch Speed Drill</span>
+                            <span style="font-size: 0.85rem; opacity: 0.85; font-weight: 500;">(Enter ↵)</span>
+                        </button>
+                    </div>
+
+                    <!-- Recent Sessions & High Scores -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">Recent Session Logs</div>
+                                <div class="card-subtitle">Stored locally in your browser</div>
+                            </div>
+                            <button type="button" class="btn-secondary" id="clearHistoryBtn" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">Clear</button>
+                        </div>
+                        <div id="historyContainer" class="history-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 2: ACTIVE DRILL ARENA ==================== -->
+        <section id="arenaView" class="view">
+            <div class="arena-wrapper">
+                <!-- Top HUD -->
+                <div class="hud-bar">
+                    <div class="hud-box">
+                        <span class="hud-label" id="hudTimerLabel">Time Remaining</span>
+                        <span class="hud-value accent" id="hudTimer">01:00</span>
+                    </div>
+                    <div class="hud-box">
+                        <span class="hud-label">Score / Solved</span>
+                        <span class="hud-value" id="hudScore">0 / 0</span>
+                    </div>
+                    <div class="hud-box">
+                        <span class="hud-label">Speed (QPM)</span>
+                        <span class="hud-value" id="hudQpm">0.0</span>
+                    </div>
+                    <div class="hud-box">
+                        <span class="hud-label">Streak</span>
+                        <span class="hud-value" id="hudStreak">0 🔥</span>
+                    </div>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="arenaProgress"></div>
+                </div>
+
+                <!-- Main Calculation Stage -->
+                <div class="problem-stage" id="problemStage">
+                    <div class="feedback-banner" id="feedbackBanner">&nbsp;</div>
+                    <div class="math-expression" id="mathExpression">24 + 58</div>
+                    
+                    <div class="answer-input-wrap">
+                        <input type="text" id="answerInput" class="answer-input" inputmode="none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="?">
+                    </div>
+
+                    <div class="arena-controls-hint">
+                        <span><span class="kbd">Enter</span> or <span class="kbd">Space</span> Submit</span>
+                        <span><span class="kbd">S</span> Skip & Reveal</span>
+                        <span><span class="kbd">Esc</span> End Drill</span>
+                    </div>
+                </div>
+
+                <!-- Responsive Touch / Mouse Numpad -->
+                <div class="numpad-container" id="onScreenNumpad">
+                    <button type="button" class="num-key" data-key="7">7</button>
+                    <button type="button" class="num-key" data-key="8">8</button>
+                    <button type="button" class="num-key" data-key="9">9</button>
+                    <button type="button" class="num-key key-action" data-key="BACK">⌫</button>
+
+                    <button type="button" class="num-key" data-key="4">4</button>
+                    <button type="button" class="num-key" data-key="5">5</button>
+                    <button type="button" class="num-key" data-key="6">6</button>
+                    <button type="button" class="num-key key-action" data-key="SKIP">Skip</button>
+
+                    <button type="button" class="num-key" data-key="1">1</button>
+                    <button type="button" class="num-key" data-key="2">2</button>
+                    <button type="button" class="num-key" data-key="3">3</button>
+                    <button type="button" class="num-key key-submit" data-key="ENTER">↵</button>
+
+                    <button type="button" class="num-key" data-key="-">−</button>
+                    <button type="button" class="num-key" data-key="0">0</button>
+                    <button type="button" class="num-key" data-key=".">.</button>
+                </div>
+
+                <div style="display: flex; justify-content: center; gap: 1rem;">
+                    <button type="button" class="btn-secondary" id="abortDrillBtn">End Session & View Summary (Esc)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 3: POST-SESSION ANALYTICS ==================== -->
+        <section id="summaryView" class="view">
+            <div class="card-header" style="border-bottom: none; margin-bottom: 0.5rem;">
+                <div>
+                    <h2 style="font-size: 1.4rem; font-weight: 700;">Session Performance Summary</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);" id="summarySubheader">Completed Sprint Mode</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button type="button" class="btn-secondary" id="reconfigureBtn">⚙️ Configure Settings</button>
+                    <button type="button" class="btn-primary" id="retryDrillBtn" style="width: auto; padding: 0.65rem 1.25rem; font-size: 0.9rem;">↻ Repeat Drill (Enter)</button>
+                </div>
+            </div>
+
+            <div class="summary-banner">
+                <div class="stat-card">
+                    <div class="stat-card-val" id="sumQpm">0.0</div>
+                    <div class="stat-card-lbl">Questions / Min (QPM)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-val" id="sumAccuracy">100%</div>
+                    <div class="stat-card-lbl">Accuracy Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-val" id="sumAvgTime">0.0s</div>
+                    <div class="stat-card-lbl">Avg Time / Question</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-val" id="sumScore">0 / 0</div>
+                    <div class="stat-card-lbl">Correct / Attempted</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Mistake & Skip Review Log</div>
+                        <div class="card-subtitle">Review missed calculations to eliminate bottlenecks</div>
+                    </div>
+                    <span id="mistakeCountBadge" class="pill-stat">0 Missed</span>
+                </div>
+                <div id="mistakeTableContainer"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // --- Application State & Configuration ---
+            const state = {
+                view: 'setup', // 'setup' | 'arena' | 'summary'
+                config: {
+                    ops: ['+', '-', '*'],
+                    minA: 10,
+                    maxA: 99,
+                    minB: 10,
+                    maxB: 99,
+                    terms: 2,
+                    decimals: 0, // 0, 1, 2
+                    allowNegative: false,
+                    autoAdvance: true,
+                    mode: 'countdown', // 'countdown' | 'target' | 'zen'
+                    timeLimit: 60,
+                    targetCount: 20
+                },
+                session: {
+                    active: false,
+                    startTime: 0,
+                    questionStartTime: 0,
+                    elapsedMs: 0,
+                    timerInterval: null,
+                    currentProblem: null,
+                    solved: 0,
+                    attempted: 0,
+                    streak: 0,
+                    bestStreak: 0,
+                    mistakes: [] // { expr, userAns, correctAns, timeSec }
+                }
+            };
+
+            const STORAGE_KEY = 'quantpulse_speed_drill_v1';
+
+            // --- DOM References ---
+            const views = {
+                setup: document.getElementById('setupView'),
+                arena: document.getElementById('arenaView'),
+                summary: document.getElementById('summaryView')
+            };
+
+            const els = {
+                navBestQpm: document.getElementById('navBestQpm'),
+                navBestScore: document.getElementById('navBestScore'),
+                brandHomeBtn: document.getElementById('brandHomeBtn'),
+                opToggles: document.querySelectorAll('.op-toggle'),
+                selectAllOpsBtn: document.getElementById('selectAllOpsBtn'),
+                minA: document.getElementById('minA'),
+                maxA: document.getElementById('maxA'),
+                minB: document.getElementById('minB'),
+                maxB: document.getElementById('maxB'),
+                termBtns: document.querySelectorAll('#termCountControl .seg-btn'),
+                decBtns: document.querySelectorAll('#decimalControl .seg-btn'),
+                allowNegativeToggle: document.getElementById('allowNegativeToggle'),
+                autoAdvanceToggle: document.getElementById('autoAdvanceToggle'),
+                modeBtns: document.querySelectorAll('#gameModeControl .seg-btn'),
+                timeBtns: document.querySelectorAll('#timeLimitControl .seg-btn'),
+                targetBtns: document.querySelectorAll('#targetCountControl .seg-btn'),
+                countdownOptions: document.getElementById('countdownOptions'),
+                targetOptions: document.getElementById('targetOptions'),
+                zenOptions: document.getElementById('zenOptions'),
+                startDrillBtn: document.getElementById('startDrillBtn'),
+                historyContainer: document.getElementById('historyContainer'),
+                clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+                // Arena
+                hudTimerLabel: document.getElementById('hudTimerLabel'),
+                hudTimer: document.getElementById('hudTimer'),
+                hudScore: document.getElementById('hudScore'),
+                hudQpm: document.getElementById('hudQpm'),
+                hudStreak: document.getElementById('hudStreak'),
+                arenaProgress: document.getElementById('arenaProgress'),
+                problemStage: document.getElementById('problemStage'),
+                feedbackBanner: document.getElementById('feedbackBanner'),
+                mathExpression: document.getElementById('mathExpression'),
+                answerInput: document.getElementById('answerInput'),
+                onScreenNumpad: document.getElementById('onScreenNumpad'),
+                abortDrillBtn: document.getElementById('abortDrillBtn'),
+                // Summary
+                summarySubheader: document.getElementById('summarySubheader'),
+                sumQpm: document.getElementById('sumQpm'),
+                sumAccuracy: document.getElementById('sumAccuracy'),
+                sumAvgTime: document.getElementById('sumAvgTime'),
+                sumScore: document.getElementById('sumScore'),
+                mistakeCountBadge: document.getElementById('mistakeCountBadge'),
+                mistakeTableContainer: document.getElementById('mistakeTableContainer'),
+                reconfigureBtn: document.getElementById('reconfigureBtn'),
+                retryDrillBtn: document.getElementById('retryDrillBtn')
+            };
+
+            // --- Initialization ---
+            function init() {
+                bindSetupEvents();
+                bindArenaEvents();
+                renderHistory();
+            }
+
+            // --- View Switching ---
+            function switchView(target) {
+                state.view = target;
+                Object.keys(views).forEach(k => {
+                    views[k].classList.toggle('active', k === target);
+                });
+                if (target === 'arena') {
+                    setTimeout(() => els.answerInput.focus(), 20);
+                }
+            }
+
+            // --- Setup & Controls Binding ---
+            function bindSetupEvents() {
+                els.brandHomeBtn.addEventListener('click', () => {
+                    if (state.session.active) endSession();
+                    switchView('setup');
+                });
+
+                // Operations Multi-Select
+                els.opToggles.forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        const op = toggle.dataset.op;
+                        if (state.config.ops.includes(op)) {
+                            if (state.config.ops.length > 1) {
+                                state.config.ops = state.config.ops.filter(item => item !== op);
+                                toggle.classList.remove('selected');
+                            }
+                        } else {
+                            state.config.ops.push(op);
+                            toggle.classList.add('selected');
+                        }
+                    });
+                });
+
+                els.selectAllOpsBtn.addEventListener('click', () => {
+                    state.config.ops = ['+', '-', '*', '/'];
+                    els.opToggles.forEach(t => t.classList.add('selected'));
+                });
+
+                // Digit Range Presets
+                document.querySelectorAll('.preset-pills').forEach(group => {
+                    const target = group.dataset.target;
+                    const buttons = group.querySelectorAll('.mini-pill');
+                    buttons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            buttons.forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            const min = parseInt(btn.dataset.min, 10);
+                            const max = parseInt(btn.dataset.max, 10);
+                            if (target === 'A') {
+                                els.minA.value = min;
+                                els.maxA.value = max;
+                            } else {
+                                els.minB.value = min;
+                                els.maxB.value = max;
+                            }
+                        });
+                    });
+                });
+
+                // Segmented Controls
+                els.termBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        els.termBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        state.config.terms = parseInt(btn.dataset.terms, 10);
+                    });
+                });
+
+                els.decBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        els.decBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        state.config.decimals = parseInt(btn.dataset.dec, 10);
+                    });
+                });
+
+                els.modeBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        els.modeBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        state.config.mode = btn.dataset.mode;
+                        els.countdownOptions.style.display = state.config.mode === 'countdown' ? 'block' : 'none';
+                        els.targetOptions.style.display = state.config.mode === 'target' ? 'block' : 'none';
+                        els.zenOptions.style.display = state.config.mode === 'zen' ? 'block' : 'none';
+                    });
+                });
+
+                els.timeBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        els.timeBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        state.config.timeLimit = parseInt(btn.dataset.time, 10);
+                    });
+                });
+
+                els.targetBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        els.targetBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        state.config.targetCount = parseInt(btn.dataset.count, 10);
+                    });
+                });
+
+                // Quick Exam Presets
+                document.querySelectorAll('.preset-btn').forEach(btn => {
+                    btn.addEventListener('click', () => applyExamPreset(btn.dataset.preset));
+                });
+
+                els.startDrillBtn.addEventListener('click', startSession);
+                els.reconfigureBtn.addEventListener('click', () => switchView('setup'));
+                els.retryDrillBtn.addEventListener('click', startSession);
+
+                els.clearHistoryBtn.addEventListener('click', () => {
+                    localStorage.removeItem(STORAGE_KEY);
+                    renderHistory();
+                });
+            }
+
+            function applyExamPreset(preset) {
+                if (preset === 'banking') {
+                    state.config.ops = ['+', '-', '*'];
+                    els.minA.value = 12; els.maxA.value = 99;
+                    els.minB.value = 11; els.maxB.value = 89;
+                    state.config.terms = 2;
+                    state.config.decimals = 0;
+                    els.allowNegativeToggle.checked = false;
+                } else if (preset === 'ssc') {
+                    state.config.ops = ['+', '-', '*', '/'];
+                    els.minA.value = 25; els.maxA.value = 450;
+                    els.minB.value = 12; els.maxB.value = 99;
+                    state.config.terms = 2;
+                    state.config.decimals = 0;
+                    els.allowNegativeToggle.checked = true;
+                } else if (preset === 'decimals') {
+                    state.config.ops = ['+', '-'];
+                    els.minA.value = 10; els.maxA.value = 99;
+                    els.minB.value = 10; els.maxB.value = 99;
+                    state.config.terms = 2;
+                    state.config.decimals = 1;
+                    els.allowNegativeToggle.checked = false;
+                } else if (preset === 'chains') {
+                    state.config.ops = ['+', '-'];
+                    els.minA.value = 15; els.maxA.value = 150;
+                    els.minB.value = 15; els.maxB.value = 99;
+                    state.config.terms = 3;
+                    state.config.decimals = 0;
+                    els.allowNegativeToggle.checked = true;
+                }
+
+                // Sync UI with preset
+                els.opToggles.forEach(t => {
+                    t.classList.toggle('selected', state.config.ops.includes(t.dataset.op));
+                });
+                els.termBtns.forEach(b => {
+                    b.classList.toggle('active', parseInt(b.dataset.terms, 10) === state.config.terms);
+                });
+                els.decBtns.forEach(b => {
+                    b.classList.toggle('active', parseInt(b.dataset.dec, 10) === state.config.decimals);
+                });
+            }
+
+            // --- Math Problem Generator ---
+            function randomInt(min, max) {
+                const low = Math.ceil(Math.min(min, max));
+                const high = Math.floor(Math.max(min, max));
+                return Math.floor(Math.random() * (high - low + 1)) + low;
+            }
+
+            function generateNumber(min, max, decimals) {
+                if (decimals === 0) {
+                    return randomInt(min, max);
+                }
+                const factor = Math.pow(10, decimals);
+                const raw = randomInt(min * factor, max * factor);
+                return Number((raw / factor).toFixed(decimals));
+            }
+
+            function formatOpSymbol(op) {
+                if (op === '*') return '×';
+                if (op === '/') return '÷';
+                if (op === '-') return '−';
+                return '+';
+            }
+
+            function generateProblem() {
+                const cfg = state.config;
+                const decimals = cfg.decimals;
+                const factor = Math.pow(10, decimals);
+
+                // If 2 terms, handle all 4 operations cleanly (especially clean division)
+                if (cfg.terms === 2) {
+                    const op = cfg.ops[Math.floor(Math.random() * cfg.ops.length)];
+
+                    if (op === '/') {
+                        // Clean division: Dividend = Divisor * Quotient
+                        const divisor = randomInt(Math.max(2, cfg.minB), Math.max(2, cfg.maxB));
+                        let quotient;
+                        if (decimals === 0) {
+                            // Scale quotient so dividend roughly aligns with Operand A scale or sensible exam bounds
+                            const minQ = Math.max(2, Math.floor(cfg.minA / Math.max(1, divisor)));
+                            const maxQ = Math.max(minQ + 8, Math.ceil(cfg.maxA / Math.max(1, divisor)));
+                            quotient = randomInt(minQ, Math.min(maxQ, 99));
+                        } else {
+                            quotient = generateNumber(2, 25, decimals);
+                        }
+                        const dividend = Number((divisor * quotient).toFixed(decimals));
+                        return {
+                            expression: `${dividend} ÷ ${divisor}`,
+                            answer: quotient
+                        };
+                    }
+
+                    let a = generateNumber(cfg.minA, cfg.maxA, decimals);
+                    let b = generateNumber(cfg.minB, cfg.maxB, decimals);
+
+                    if (op === '-' && !cfg.allowNegative && a < b) {
+                        const tmp = a; a = b; b = tmp;
+                    }
+
+                    let ans;
+                    if (op === '+') ans = Number((a + b).toFixed(decimals));
+                    else if (op === '-') ans = Number((a - b).toFixed(decimals));
+                    else if (op === '*') {
+                        const multDecimals = Math.min(2, decimals * 2);
+                        ans = Number((a * b).toFixed(multDecimals));
+                    }
+
+                    return {
+                        expression: `${a} ${formatOpSymbol(op)} ${b}`,
+                        answer: ans
+                    };
+                }
+
+                // Multi-term chain (3 to 5 operands)
+                // Filter operations for chains to keep mental evaluation well-defined
+                const chainOps = cfg.ops.filter(o => o !== '/');
+                const activeOps = chainOps.length > 0 ? chainOps : ['+', '-'];
+
+                let terms = [generateNumber(cfg.minA, cfg.maxA, decimals)];
+                let chosenOps = [];
+
+                for (let i = 1; i < cfg.terms; i++) {
+                    const op = activeOps[Math.floor(Math.random() * activeOps.length)];
+                    chosenOps.push(op);
+                    // Keep multiplication terms slightly smaller in 3-5 term chains
+                    const num = (op === '*')
+                        ? randomInt(2, Math.min(25, cfg.maxB))
+                        : generateNumber(cfg.minB, cfg.maxB, decimals);
+                    terms.push(num);
+                }
+
+                // Build standard expression string and evaluate with standard precedence
+                let exprParts = [terms[0]];
+                let jsExpr = `${terms[0]}`;
+                for (let i = 0; i < chosenOps.length; i++) {
+                    exprParts.push(formatOpSymbol(chosenOps[i]), terms[i + 1]);
+                    jsExpr += ` ${chosenOps[i]} ${terms[i + 1]}`;
+                }
+
+                let rawAns = Function(`"use strict"; return (${jsExpr});`)();
+                let finalAns = Number(rawAns.toFixed(decimals));
+
+                // If negative answers are disallowed and result is negative, flip leading subtraction or add offset
+                if (!cfg.allowNegative && finalAns < 0) {
+                    const boost = Math.abs(Math.floor(finalAns)) + generateNumber(cfg.minA, cfg.maxA, decimals);
+                    terms[0] = Number((terms[0] + boost).toFixed(decimals));
+                    exprParts[0] = terms[0];
+                    jsExpr = `${terms[0]}`;
+                    for (let i = 0; i < chosenOps.length; i++) {
+                        jsExpr += ` ${chosenOps[i]} ${terms[i + 1]}`;
+                    }
+                    rawAns = Function(`"use strict"; return (${jsExpr});`)();
+                    finalAns = Number(rawAns.toFixed(decimals));
+                }
+
+                return {
+                    expression: exprParts.join(' '),
+                    answer: finalAns
+                };
+            }
+
+            // --- Session Lifecycle ---
+            function syncConfigFromInputs() {
+                state.config.minA = Math.max(1, parseInt(els.minA.value, 10) || 10);
+                state.config.maxA = Math.max(state.config.minA, parseInt(els.maxA.value, 10) || 99);
+                state.config.minB = Math.max(1, parseInt(els.minB.value, 10) || 10);
+                state.config.maxB = Math.max(state.config.minB, parseInt(els.maxB.value, 10) || 99);
+                state.config.allowNegative = els.allowNegativeToggle.checked;
+                state.config.autoAdvance = els.autoAdvanceToggle.checked;
+            }
+
+            function startSession() {
+                syncConfigFromInputs();
+
+                state.session = {
+                    active: true,
+                    startTime: performance.now(),
+                    questionStartTime: performance.now(),
+                    elapsedMs: 0,
+                    timerInterval: null,
+                    currentProblem: null,
+                    solved: 0,
+                    attempted: 0,
+                    streak: 0,
+                    bestStreak: 0,
+                    mistakes: []
+                };
+
+                if (state.config.mode === 'countdown') {
+                    els.hudTimerLabel.textContent = 'Time Remaining';
+                } else if (state.config.mode === 'target') {
+                    els.hudTimerLabel.textContent = 'Elapsed Time';
+                } else {
+                    els.hudTimerLabel.textContent = 'Zen Elapsed';
+                }
+
+                els.feedbackBanner.className = 'feedback-banner';
+                els.feedbackBanner.innerHTML = '&nbsp;';
+                els.answerInput.value = '';
+
+                switchView('arena');
+                nextQuestion();
+                updateHud();
+
+                state.session.timerInterval = setInterval(tickTimer, 100);
+            }
+
+            function tickTimer() {
+                if (!state.session.active) return;
+                const now = performance.now();
+                state.session.elapsedMs = now - state.session.startTime;
+                const elapsedSec = state.session.elapsedMs / 1000;
+
+                if (state.config.mode === 'countdown') {
+                    const remaining = Math.max(0, state.config.timeLimit - elapsedSec);
+                    els.hudTimer.textContent = formatTime(remaining);
+                    const pct = (remaining / state.config.timeLimit) * 100;
+                    els.arenaProgress.style.width = `${pct}%`;
+
+                    if (remaining <= 0) {
+                        endSession();
+                        return;
+                    }
+                } else if (state.config.mode === 'target') {
+                    els.hudTimer.textContent = formatTime(elapsedSec);
+                    const pct = (state.session.solved / state.config.targetCount) * 100;
+                    els.arenaProgress.style.width = `${Math.min(100, pct)}%`;
+                } else {
+                    els.hudTimer.textContent = formatTime(elapsedSec);
+                    els.arenaProgress.style.width = '100%';
+                }
+
+                // Live QPM calculation
+                const minutes = elapsedSec / 60;
+                const qpm = minutes > 0.02 ? (state.session.solved / minutes).toFixed(1) : '0.0';
+                els.hudQpm.textContent = qpm;
+            }
+
+            function formatTime(totalSeconds) {
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = Math.floor(totalSeconds % 60);
+                const tenths = Math.floor((totalSeconds % 1) * 10);
+                if (mins === 0 && totalSeconds < 10 && state.config.mode === 'countdown') {
+                    return `00:0${secs}.${tenths}`;
+                }
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            function nextQuestion() {
+                state.session.currentProblem = generateProblem();
+                state.session.questionStartTime = performance.now();
+                els.mathExpression.textContent = state.session.currentProblem.expression;
+                els.answerInput.value = '';
+                els.answerInput.focus();
+            }
+
+            function updateHud() {
+                const s = state.session;
+                if (state.config.mode === 'target') {
+                    els.hudScore.textContent = `${s.solved} / ${state.config.targetCount}`;
+                } else {
+                    els.hudScore.textContent = `${s.solved} / ${s.attempted}`;
+                }
+                els.hudStreak.textContent = `${s.streak} 🔥`;
+            }
+
+            function triggerStageFlash(isCorrect, bannerText) {
+                els.problemStage.classList.remove('flash-correct', 'flash-wrong');
+                void els.problemStage.offsetWidth; // Reflow
+                els.problemStage.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
+
+                els.feedbackBanner.textContent = bannerText;
+                els.feedbackBanner.className = `feedback-banner show ${isCorrect ? 'ok' : 'error'}`;
+
+                setTimeout(() => {
+                    els.problemStage.classList.remove('flash-correct', 'flash-wrong');
+                }, 260);
+            }
+
+            function checkAutoAdvance() {
+                if (!state.session.active || !state.config.autoAdvance) return;
+                const raw = els.answerInput.value.trim();
+                if (raw === '' || raw === '-' || raw === '.' || raw === '-.') return;
+
+                const targetAns = state.session.currentProblem.answer;
+                const targetStr = String(targetAns);
+
+                // Match exact numeric value and ensure user finished typing decimal digits if required
+                const typedNum = Number(raw);
+                if (!Number.isNaN(typedNum) && typedNum === targetAns) {
+                    // Prevent premature trigger if target is 1.5 and user typed 1.50 or similar edge cases
+                    if (raw === targetStr || Number(raw) === targetAns) {
+                        recordCorrect();
+                    }
+                }
+            }
+
+            function submitManualAnswer(isSkip = false) {
+                if (!state.session.active) return;
+                const raw = els.answerInput.value.trim();
+                const targetAns = state.session.currentProblem.answer;
+
+                if (!isSkip && raw === '') return;
+
+                const typedNum = Number(raw);
+                if (!isSkip && !Number.isNaN(typedNum) && Math.abs(typedNum - targetAns) < 1e-6) {
+                    recordCorrect();
+                } else {
+                    recordMistake(isSkip ? 'Skipped' : raw);
+                }
+            }
+
+            function recordCorrect() {
+                const s = state.session;
+                const qTime = ((performance.now() - s.questionStartTime) / 1000).toFixed(2);
+                s.solved++;
+                s.attempted++;
+                s.streak++;
+                if (s.streak > s.bestStreak) s.bestStreak = s.streak;
+
+                triggerStageFlash(true, `✓ Correct (${qTime}s)`);
+                updateHud();
+
+                if (state.config.mode === 'target' && s.solved >= state.config.targetCount) {
+                    endSession();
+                } else {
+                    nextQuestion();
+                }
+            }
+
+            function recordMistake(userInputStr) {
+                const s = state.session;
+                const qTime = ((performance.now() - s.questionStartTime) / 1000).toFixed(2);
+                const prob = s.currentProblem;
+
+                s.attempted++;
+                s.streak = 0;
+                s.mistakes.push({
+                    expr: prob.expression,
+                    userAns: userInputStr,
+                    correctAns: prob.answer,
+                    timeSec: qTime
+                });
+
+                triggerStageFlash(false, `✗ Ans: ${prob.expression} = ${prob.answer}`);
+                updateHud();
+                nextQuestion();
+            }
+
+            function endSession() {
+                if (!state.session.active) return;
+                state.session.active = false;
+                clearInterval(state.session.timerInterval);
+
+                const s = state.session;
+                const totalSec = Math.max(0.5, (performance.now() - s.startTime) / 1000);
+                const qpm = Number(((s.solved / totalSec) * 60).toFixed(1));
+                const accuracy = s.attempted > 0 ? Math.round((s.solved / s.attempted) * 100) : 100;
+                const avgTime = s.solved > 0 ? (totalSec / s.solved).toFixed(2) : '0.00';
+
+                // Populate Summary UI
+                const modeNames = {
+                    countdown: `Sprint Mode (${state.config.timeLimit}s)`,
+                    target: `Target Batch (${state.config.targetCount} Qs)`,
+                    zen: `Endless Zen Mode (${Math.round(totalSec)}s)`
+                };
+                els.summarySubheader.textContent = `${modeNames[state.config.mode]} • Operations: ${state.config.ops.map(formatOpSymbol).join(' ')}`;
+                els.sumQpm.textContent = qpm.toFixed(1);
+                els.sumAccuracy.textContent = `${accuracy}%`;
+                els.sumAvgTime.textContent = `${avgTime}s`;
+                els.sumScore.textContent = `${s.solved} / ${s.attempted}`;
+                els.mistakeCountBadge.textContent = `${s.mistakes.length} Missed`;
+
+                renderMistakeTable(s.mistakes);
+
+                // Save to localStorage if at least 1 question was attempted
+                if (s.attempted > 0) {
+                    saveSessionRecord({
+                        mode: modeNames[state.config.mode],
+                        qpm,
+                        solved: s.solved,
+                        attempted: s.attempted,
+                        accuracy,
+                        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    });
+                }
+
+                switchView('summary');
+            }
+
+            function renderMistakeTable(mistakes) {
+                if (mistakes.length === 0) {
+                    els.mistakeTableContainer.innerHTML = `
+                        <div class="empty-state">
+                            🎉 Zero mistakes recorded in this session! Flawless calculation accuracy.
+                        </div>
+                    `;
+                    return;
+                }
+
+                let rows = mistakes.map((m, idx) => `
+                    <tr>
+                        <td class="mono">${idx + 1}</td>
+                        <td class="mono" style="font-weight: 600;">${m.expr}</td>
+                        <td class="mono"><span class="badge-wrong">${m.userAns}</span></td>
+                        <td class="mono"><span class="badge-correct">${m.correctAns}</span></td>
+                        <td class="mono" style="color: var(--text-secondary);">${m.timeSec}s</td>
+                    </tr>
+                `).join('');
+
+                els.mistakeTableContainer.innerHTML = `
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Question</th>
+                                    <th>Your Input</th>
+                                    <th>Correct Answer</th>
+                                    <th>Time Spent</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            // --- Keyboard & Numpad Input Handling ---
+            function bindArenaEvents() {
+                // Keep input focused when clicking anywhere in the problem stage
+                els.problemStage.addEventListener('click', () => {
+                    if (state.session.active) els.answerInput.focus();
+                });
+
+                els.answerInput.addEventListener('input', () => {
+                    // Sanitize to allow only digits, minus, and decimal point
+                    els.answerInput.value = els.answerInput.value.replace(/[^0-9.\-]/g, '');
+                    checkAutoAdvance();
+                });
+
+                els.abortDrillBtn.addEventListener('click', endSession);
+
+                // On-Screen Numpad support
+                els.onScreenNumpad.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.num-key');
+                    if (!btn || !state.session.active) return;
+
+                    const key = btn.dataset.key;
+                    if (key === 'BACK') {
+                        els.answerInput.value = els.answerInput.value.slice(0, -1);
+                    } else if (key === 'ENTER') {
+                        submitManualAnswer(false);
+                    } else if (key === 'SKIP') {
+                        submitManualAnswer(true);
+                    } else if (key === '-') {
+                        if (els.answerInput.value.startsWith('-')) {
+                            els.answerInput.value = els.answerInput.value.slice(1);
+                        } else {
+                            els.answerInput.value = '-' + els.answerInput.value;
+                        }
+                        checkAutoAdvance();
+                    } else if (key === '.') {
+                        if (!els.answerInput.value.includes('.')) {
+                            els.answerInput.value += '.';
+                        }
+                    } else {
+                        els.answerInput.value += key;
+                        checkAutoAdvance();
+                    }
+                    els.answerInput.focus();
+                });
+
+                // Global Keyboard Listener for Zero-Latency Flow
+                window.addEventListener('keydown', (e) => {
+                    if (state.view === 'arena' && state.session.active) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            submitManualAnswer(false);
+                        } else if (e.key === 'Escape') {
+                            e.preventDefault();
+                            endSession();
+                        } else if (e.key.toLowerCase() === 's') {
+                            e.preventDefault();
+                            submitManualAnswer(true);
+                        } else if (document.activeElement !== els.answerInput && /^[0-9.\-]$/.test(e.key)) {
+                            els.answerInput.focus();
+                        }
+                    } else if (state.view === 'setup' && e.key === 'Enter') {
+                        if (document.activeElement.tagName !== 'INPUT') {
+                            e.preventDefault();
+                            startSession();
+                        }
+                    } else if (state.view === 'summary' && e.key === 'Enter') {
+                        e.preventDefault();
+                        startSession();
+                    }
+                });
+            }
+
+            // --- LocalStorage Persistence ---
+            function getStoredData() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return { bestQpm: 0, bestScore: 0, history: [] };
+                    return JSON.parse(raw);
+                } catch (err) {
+                    return { bestQpm: 0, bestScore: 0, history: [] };
+                }
+            }
+
+            function saveSessionRecord(record) {
+                const data = getStoredData();
+                if (record.qpm > data.bestQpm) data.bestQpm = record.qpm;
+                if (record.solved > data.bestScore) data.bestScore = record.solved;
+                data.history.unshift(record);
+                if (data.history.length > 15) data.history.pop();
+
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                } catch (e) {
+                    // Ignore storage quota errors
+                }
+                renderHistory();
+            }
+
+            function renderHistory() {
+                const data = getStoredData();
+                els.navBestQpm.textContent = Number(data.bestQpm || 0).toFixed(1);
+                els.navBestScore.textContent = data.bestScore || 0;
+
+                if (!data.history || data.history.length === 0) {
+                    els.historyContainer.innerHTML = `
+                        <div class="empty-state">
+                            No drills completed yet. Launch a session to track your QPM and accuracy!
+                        </div>
+                    `;
+                    return;
+                }
+
+                els.historyContainer.innerHTML = data.history.map(item => `
+                    <div class="history-item">
+                        <div class="history-meta">
+                            <span class="history-mode">${item.mode}</span>
+                            <span class="history-date">Today at ${item.date}</span>
+                        </div>
+                        <div class="history-metrics">
+                            <span style="color: var(--accent); font-weight: 700;">${item.qpm} QPM</span>
+                            <span>${item.solved}/${item.attempted} (${item.accuracy}%)</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
