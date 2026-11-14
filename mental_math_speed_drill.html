@@ -875,7 +875,353 @@
             color: var(--text-muted);
             font-size: 0.88rem;
         }
-    </style>
+
+        /* ==================== MODE SWITCHER TABS ==================== */
+        .mode-tabs-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mode-tabs {
+            display: flex;
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            padding: 0.25rem;
+            border-radius: 9999px;
+            gap: 0.25rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .mode-tab {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 0.45rem 1.15rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.2s ease;
+            user-select: none;
+            outline: none;
+        }
+
+        .mode-tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+        }
+
+        .mode-tab.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(99, 102, 241, 0.28));
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .tab-icon {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 0.75rem;
+                padding: 0.75rem 1rem;
+            }
+            .header-stats {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ==================== MEMORY CHALLENGE STYLES ==================== */
+        #speedDrillApp, #memoryApp {
+            width: 100%;
+        }
+
+        .mem-direction-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+        }
+
+        .mem-direction-badge.forward {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .mem-direction-badge.reverse {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--warning);
+            color: #fbbf24;
+            animation: pulseWarning 1.5s infinite alternate;
+        }
+
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 5px rgba(245, 158, 11, 0.2); }
+            100% { box-shadow: 0 0 16px rgba(245, 158, 11, 0.5); }
+        }
+
+        /* Cards container for All At Once mode */
+        .mem-cards-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 1.25rem auto;
+            max-width: 650px;
+        }
+
+        .mem-card {
+            min-width: 68px;
+            height: 90px;
+            background: linear-gradient(145deg, #1c2742, #131b2e);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 2.7rem;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            animation: memCardPop 0.25s ease-out;
+        }
+
+        @media (max-width: 480px) {
+            .mem-card {
+                min-width: 52px;
+                height: 72px;
+                font-size: 2rem;
+            }
+        }
+
+        /* Single Card for Sequential Mode */
+        .mem-single-card-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem auto;
+        }
+
+        .mem-single-card {
+            width: 130px;
+            height: 150px;
+            background: linear-gradient(145deg, #1c2742, #131b2e);
+            border: 3px solid var(--accent);
+            border-radius: var(--radius-lg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 4.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 12px 35px rgba(56, 189, 248, 0.35);
+            animation: memCardPop 0.2s ease-out;
+        }
+
+        .mem-seq-dots {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .mem-seq-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .mem-seq-dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .mem-seq-dot.done {
+            background: var(--success);
+        }
+
+        /* Spatial Grid Matrix */
+        .mem-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.65rem;
+            max-width: 300px;
+            margin: 1.25rem auto;
+        }
+
+        .mem-matrix-cell {
+            aspect-ratio: 1;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .mem-matrix-cell.lit {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 15px var(--accent-glow);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* Input Phase: Digit Slots Container */
+        .mem-slots-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1.25rem auto 1.5rem;
+            max-width: 600px;
+        }
+
+        .mem-slot {
+            width: 54px;
+            height: 68px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-base);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        @media (max-width: 480px) {
+            .mem-slot {
+                width: 44px;
+                height: 56px;
+                font-size: 1.7rem;
+            }
+        }
+
+        .mem-slot.filled {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--text-primary);
+        }
+
+        .mem-slot.current {
+            border-color: #818cf8;
+            box-shadow: 0 0 12px rgba(129, 140, 248, 0.45);
+            animation: slotPulse 1s infinite alternate;
+        }
+
+        .mem-slot.correct-slot {
+            border-color: var(--success) !important;
+            background: var(--success-bg) !important;
+            color: var(--success) !important;
+        }
+
+        .mem-slot.wrong-slot {
+            border-color: var(--danger) !important;
+            background: var(--danger-bg) !important;
+            color: var(--danger) !important;
+        }
+
+        @keyframes slotPulse {
+            0% { border-color: rgba(129, 140, 248, 0.6); }
+            100% { border-color: #818cf8; box-shadow: 0 0 14px rgba(129, 140, 248, 0.7); }
+        }
+
+        @keyframes memCardPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Mistake Comparison Reveal Card */
+        .mem-mistake-card {
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem auto 1.5rem;
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            text-align: left;
+        }
+
+        .mem-mistake-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.88rem;
+            border-bottom: 1px solid rgba(35, 48, 77, 0.4);
+            padding-bottom: 0.45rem;
+        }
+
+        .mem-mistake-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .mem-mistake-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .mem-mistake-value {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+        }
+
+        .mem-mistake-value.seq {
+            color: var(--text-primary);
+        }
+
+        .mem-mistake-value.target {
+            color: var(--success);
+        }
+
+        .mem-mistake-value.user {
+            color: var(--danger);
+        }
+
+        .badge-tag {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        </style>
 </head>
 <body>
 
@@ -885,13 +1231,28 @@
                 <div class="brand-icon">∑</div>
                 <div>Quant<span>Pulse</span></div>
             </div>
+
+            <!-- UI Mode Selection: Speed Drill vs Memory Challenge -->
+            <div class="mode-tabs-wrap">
+                <div class="mode-tabs" role="tablist" aria-label="Game Mode">
+                    <button type="button" class="mode-tab active" id="tabSpeedDrill" role="tab" aria-selected="true" title="Mental Math Speed Drill">
+                        <span class="tab-icon">⚡</span>
+                        <span>Speed Drill</span>
+                    </button>
+                    <button type="button" class="mode-tab" id="tabMemoryChallenge" role="tab" aria-selected="false" title="Memory Grid / Digit Span (N-Back) Challenge">
+                        <span class="tab-icon">🧠</span>
+                        <span>Memory Challenge</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="header-stats">
                 <div class="pill-stat">
-                    <span>Best QPM:</span>
+                    <span id="navStatLabel1">Best QPM:</span>
                     <strong id="navBestQpm">0.0</strong>
                 </div>
                 <div class="pill-stat">
-                    <span>Best Score:</span>
+                    <span id="navStatLabel2">Best Score:</span>
                     <strong id="navBestScore">0</strong>
                 </div>
             </div>
@@ -899,8 +1260,10 @@
     </header>
 
     <main>
-        <!-- ==================== VIEW 1: SETUP & CONFIGURATION ==================== -->
-        <section id="setupView" class="view active">
+        <!-- SPEED DRILL CONTAINER (PRESERVED INTACT) -->
+        <div id="speedDrillApp">
+            <!-- ==================== VIEW 1: SETUP & CONFIGURATION ==================== -->
+            <section id="setupView" class="view active">
             <!-- Quick Exam Presets -->
             <div class="presets-bar">
                 <span style="font-size: 0.8rem; color: var(--text-muted); align-self: center; margin-right: 0.3rem;">Quick Exam Presets:</span>
@@ -1224,6 +1587,334 @@
                 <div id="mistakeTableContainer"></div>
             </div>
         </section>
+        </div><!-- END #speedDrillApp -->
+
+        <!-- ==================== MEMORY CHALLENGE CONTAINER ==================== -->
+        <div id="memoryApp" style="display: none;">
+            <!-- ==================== MEMORY VIEW 1: SETUP & CONFIGURATION ==================== -->
+            <section id="memSetupView" class="view active">
+                <!-- Quick Challenge Presets -->
+                <div class="presets-bar">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); align-self: center; margin-right: 0.3rem;">Memory Presets:</span>
+                    <button type="button" class="preset-btn mem-preset-btn" data-mem-preset="forward-easy">🟢 Forward Span (3 Digits)</button>
+                    <button type="button" class="preset-btn mem-preset-btn" data-mem-preset="forward-standard">⚡ Standard Forward (4 Digits)</button>
+                    <button type="button" class="preset-btn mem-preset-btn" data-mem-preset="reverse-master">🔄 Reverse Order Master (4 Digits)</button>
+                    <button type="button" class="preset-btn mem-preset-btn" data-mem-preset="matrix-grid">🔲 Memory Grid (3 Digits Grid)</button>
+                    <button type="button" class="preset-btn mem-preset-btn" data-mem-preset="alternating-pro">🎲 Random Order Chaos (4 Digits)</button>
+                </div>
+
+                <div class="setup-grid">
+                    <!-- Left Column: Core Memory Drill Configuration -->
+                    <div>
+                        <!-- 1. Recall Order Option -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">1. Recall Direction (Order Mode)</div>
+                                    <div class="card-subtitle">Choose how you must recall and type back the digit sequence</div>
+                                </div>
+                            </div>
+                            <div class="segmented-control" id="memDirectionControl">
+                                <button type="button" class="seg-btn active" data-direction="forward">
+                                    ➡️ Forward (Exact Order)
+                                </button>
+                                <button type="button" class="seg-btn" data-direction="reverse">
+                                    🔄 Reverse (Backwards)
+                                </button>
+                                <button type="button" class="seg-btn" data-direction="random">
+                                    🎲 Randomized (Mixed)
+                                </button>
+                            </div>
+                            <div id="memDirectionHint" style="margin-top: 0.65rem; font-size: 0.78rem; color: var(--text-muted);">
+                                Type digits in the exact same sequence they appeared (e.g. 7 4 2 ➔ 742).
+                            </div>
+                        </div>
+
+                        <!-- 2. Presentation Style & Duration -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">2. Flash Presentation & Duration</div>
+                                    <div class="card-subtitle">How numbers appear and how long they stay visible</div>
+                                </div>
+                            </div>
+
+                            <!-- Display Mode -->
+                            <div class="control-group">
+                                <div class="control-label">
+                                    <span>Display Style</span>
+                                </div>
+                                <div class="segmented-control" id="memDisplayModeControl">
+                                    <button type="button" class="seg-btn active" data-display="all">
+                                        🃏 All at Once (Cards)
+                                    </button>
+                                    <button type="button" class="seg-btn" data-display="sequential">
+                                        👁️ One by One (Sequential)
+                                    </button>
+                                    <button type="button" class="seg-btn" data-display="grid">
+                                        🔲 Spatial Matrix Grid
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Flash Duration -->
+                            <div class="control-group">
+                                <div class="control-label">
+                                    <span>Flash Duration</span>
+                                    <span id="memDurationBadge" style="font-family: var(--font-mono); color: var(--accent); font-weight: 600;">2.0s</span>
+                                </div>
+                                <div class="segmented-control" id="memDurationControl">
+                                    <button type="button" class="seg-btn" data-duration="1.2">⚡ 1.2s (Fast)</button>
+                                    <button type="button" class="seg-btn active" data-duration="2.0">⏱️ 2.0s (Standard)</button>
+                                    <button type="button" class="seg-btn" data-duration="3.0">🧘 3.0s (Relaxed)</button>
+                                </div>
+                            </div>
+
+                            <!-- Starting Digit Span -->
+                            <div class="control-group">
+                                <div class="control-label">
+                                    <span>Starting Span (Digits)</span>
+                                    <span id="memStartSpanBadge" style="font-family: var(--font-mono); color: var(--accent); font-weight: 600;">3 Digits</span>
+                                </div>
+                                <div class="segmented-control" id="memStartSpanControl">
+                                    <button type="button" class="seg-btn active" data-span="3">3 Digits (Beginner)</button>
+                                    <button type="button" class="seg-btn" data-span="4">4 Digits (Standard)</button>
+                                    <button type="button" class="seg-btn" data-span="5">5 Digits (Advanced)</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Progression & Difficulty Rules -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">3. Progression Rules & Penalty</div>
+                                    <div class="card-subtitle">What happens when you enter an incorrect sequence</div>
+                                </div>
+                            </div>
+
+                            <div class="segmented-control" id="memPenaltyControl">
+                                <button type="button" class="seg-btn active" data-penalty="drop">
+                                    📉 Drop 1 Level (-1 Digit)
+                                </button>
+                                <button type="button" class="seg-btn" data-penalty="lives">
+                                    ❤️ 3 Strikes / Lives
+                                </button>
+                                <button type="button" class="seg-btn" data-penalty="reset">
+                                    🔄 Reset to Starting Span
+                                </button>
+                            </div>
+
+                            <div style="margin-top: 1rem;">
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <span class="toggle-title">Auto-Advance on Max Digits</span>
+                                        <span class="toggle-desc">Automatically submit as soon as the target number of digits is typed</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="memAutoAdvanceToggle" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <span class="toggle-title">Audio Synthesizer Cues</span>
+                                        <span class="toggle-desc">Synthesized audio tones for flashes, ticks, and success/error chimes</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="memAudioToggle" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-primary" id="startMemoryBtn">
+                            <span>🚀 Launch Memory Challenge (Enter)</span>
+                        </button>
+                    </div>
+
+                    <!-- Right Column: Working Memory Info & Local Session Logs -->
+                    <div>
+                        <!-- Cognitive Span Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🧠 Working Memory Training</div>
+                                    <div class="card-subtitle">Digit span & working memory mechanics</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                                <div style="display: flex; gap: 0.6rem; margin-bottom: 0.65rem;">
+                                    <span style="color: var(--accent); font-weight: 700; font-family: var(--font-mono);">01</span>
+                                    <span><strong>Observe & Retain:</strong> A sequence of numbers flashes on screen for 2 seconds. Retain the digits in working memory.</span>
+                                </div>
+                                <div style="display: flex; gap: 0.6rem; margin-bottom: 0.65rem;">
+                                    <span style="color: var(--accent); font-weight: 700; font-family: var(--font-mono);">02</span>
+                                    <span><strong>Recall Direction:</strong> In <em>Reverse</em> mode, invert the digits (e.g. 5291 ➔ 1925) to challenge cognitive manipulation!</span>
+                                </div>
+                                <div style="display: flex; gap: 0.6rem; margin-bottom: 0.65rem;">
+                                    <span style="color: var(--accent); font-weight: 700; font-family: var(--font-mono);">03</span>
+                                    <span><strong>Progression (+1 Digit):</strong> Each correct recall increases sequence length by 1, pushing your memory boundary.</span>
+                                </div>
+                                <div style="display: flex; gap: 0.6rem;">
+                                    <span style="color: var(--accent); font-weight: 700; font-family: var(--font-mono);">04</span>
+                                    <span><strong>Error Analysis:</strong> Mistakes reveal the exact sequence vs your input, recording metrics for post-round review.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Memory Session History Logs -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Memory Session Logs</div>
+                                    <div class="card-subtitle">Stored locally in your browser</div>
+                                </div>
+                                <button type="button" class="btn-secondary" id="clearMemoryHistoryBtn" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">Clear</button>
+                            </div>
+                            <div id="memHistoryContainer" class="history-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== MEMORY VIEW 2: ACTIVE MEMORY ARENA ==================== -->
+            <section id="memArenaView" class="view">
+                <div class="arena-wrapper">
+                    <!-- Top HUD -->
+                    <div class="hud-bar">
+                        <div class="hud-box">
+                            <span class="hud-label">Current Span / Level</span>
+                            <span class="hud-value accent" id="memHudSpan">Level 1 (3 Digits)</span>
+                        </div>
+                        <div class="hud-box">
+                            <span class="hud-label">Recall Direction</span>
+                            <span class="hud-value" id="memHudDirection" style="color: #f59e0b; font-size: 1.1rem; display: flex; align-items: center; gap: 0.35rem;">
+                                ➡️ Forward
+                            </span>
+                        </div>
+                        <div class="hud-box">
+                            <span class="hud-label">Score & Streak</span>
+                            <span class="hud-value" id="memHudScore">0 pts (0 🔥)</span>
+                        </div>
+                        <div class="hud-box">
+                            <span class="hud-label" id="memHudStatusLabel">Status / Penalty</span>
+                            <span class="hud-value" id="memHudStatus">📉 Drop -1</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar (drains during flash duration) -->
+                    <div class="progress-track">
+                        <div class="progress-fill" id="memArenaProgress"></div>
+                    </div>
+
+                    <!-- Main Stage -->
+                    <div class="problem-stage" id="memProblemStage">
+                        <div class="feedback-banner" id="memFeedbackBanner">&nbsp;</div>
+
+                        <!-- Stage Content: switches between READY, FLASH, INPUT, MISTAKE_REVEAL -->
+                        <div id="memStageBody" style="min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;"></div>
+
+                        <!-- Hidden input sync for keyboard/mobile -->
+                        <div class="answer-input-wrap" id="memInputWrap" style="display: none; max-width: 240px; margin: 0 auto;">
+                            <input type="text" id="memAnswerInput" class="answer-input" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="?">
+                        </div>
+
+                        <div class="arena-controls-hint" id="memControlsHint">
+                            <span><span class="kbd">0-9</span> Type Digits</span>
+                            <span><span class="kbd">Enter</span> Submit</span>
+                            <span><span class="kbd">Backspace</span> Erase</span>
+                            <span><span class="kbd">Esc</span> End Session</span>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Touch / Mouse Numpad -->
+                    <div class="numpad-container" id="memOnScreenNumpad">
+                        <button type="button" class="num-key" data-mem-key="7">7</button>
+                        <button type="button" class="num-key" data-mem-key="8">8</button>
+                        <button type="button" class="num-key" data-mem-key="9">9</button>
+                        <button type="button" class="num-key key-action" data-mem-key="BACK">⌫</button>
+
+                        <button type="button" class="num-key" data-mem-key="4">4</button>
+                        <button type="button" class="num-key" data-mem-key="5">5</button>
+                        <button type="button" class="num-key" data-mem-key="6">6</button>
+                        <button type="button" class="num-key key-action" data-mem-key="CLEAR">C</button>
+
+                        <button type="button" class="num-key" data-mem-key="1">1</button>
+                        <button type="button" class="num-key" data-mem-key="2">2</button>
+                        <button type="button" class="num-key" data-mem-key="3">3</button>
+                        <button type="button" class="num-key key-submit" data-mem-key="ENTER">↵</button>
+
+                        <button type="button" class="num-key" data-mem-key="NONE" style="opacity: 0.25; cursor: default;">•</button>
+                        <button type="button" class="num-key" data-mem-key="0">0</button>
+                        <button type="button" class="num-key" data-mem-key="NONE2" style="opacity: 0.25; cursor: default;">•</button>
+                    </div>
+
+                    <div style="display: flex; justify-content: center; gap: 1rem;">
+                        <button type="button" class="btn-secondary" id="abortMemoryBtn">End Challenge & View Stats (Esc)</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== MEMORY VIEW 3: SUMMARY & COGNITIVE REPORT ==================== -->
+            <section id="memSummaryView" class="view">
+                <div class="card-header" style="border-bottom: none; margin-bottom: 0.5rem;">
+                    <div>
+                        <h2 style="font-size: 1.4rem; font-weight: 700;">Memory Challenge Summary</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);" id="memSummarySubheader">Digit Span Performance Report</p>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button type="button" class="btn-secondary" id="memReconfigureBtn">⚙️ Configure Challenge</button>
+                        <button type="button" class="btn-primary" id="memRetryBtn" style="width: auto; padding: 0.65rem 1.25rem; font-size: 0.9rem;">↻ Repeat Challenge (Enter)</button>
+                    </div>
+                </div>
+
+                <div class="summary-banner">
+                    <div class="stat-card">
+                        <div class="stat-card-val" id="memSumPeakSpan">0 Digits</div>
+                        <div class="stat-card-lbl">Peak Working Memory Span</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-val" id="memSumScore">0 pts</div>
+                        <div class="stat-card-lbl">Total Points Earned</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-val" id="memSumAccuracy">100%</div>
+                        <div class="stat-card-lbl">Accuracy Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-val" id="memSumStreak">0 🔥</div>
+                        <div class="stat-card-lbl">Best Streak</div>
+                    </div>
+                </div>
+
+                <!-- Cognitive Assessment Rating Card -->
+                <div class="card" id="memSpanAssessmentCard" style="display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.4rem; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="font-size: 2.2rem;" id="memAssessmentIcon">🧠</div>
+                        <div>
+                            <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);" id="memAssessmentTitle">Working Memory Rating</div>
+                            <div style="font-size: 0.82rem; color: var(--text-secondary);" id="memAssessmentDesc">Average adult digit span is 7 ± 2 items (Miller's Law).</div>
+                        </div>
+                    </div>
+                    <div class="pill-stat" style="border-color: var(--accent); color: var(--accent); font-weight: 700; font-size: 0.88rem;" id="memAssessmentBadge">
+                        Standard Span
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Round-by-Round Breakdown</div>
+                            <div class="card-subtitle">Detailed sequence and recall accuracy review</div>
+                        </div>
+                        <span id="memMistakeCountBadge" class="pill-stat">0 Missed</span>
+                    </div>
+                    <div id="memMistakeTableContainer"></div>
+                </div>
+            </section>
+        </div><!-- END #memoryApp -->
     </main>
 
     <script>
@@ -1340,6 +2031,11 @@
             // --- Setup & Controls Binding ---
             function bindSetupEvents() {
                 els.brandHomeBtn.addEventListener('click', () => {
+                    if (activeAppMode === 'memory') {
+                        if (memState.session.active) memEndSession();
+                        memSwitchView('setup');
+                        return;
+                    }
                     if (state.session.active) endSession();
                     switchView('setup');
                 });
@@ -1431,7 +2127,7 @@
                 });
 
                 // Quick Exam Presets
-                document.querySelectorAll('.preset-btn').forEach(btn => {
+                document.querySelectorAll('#setupView .preset-btn').forEach(btn => {
                     btn.addEventListener('click', () => applyExamPreset(btn.dataset.preset));
                 });
 
@@ -1922,6 +2618,7 @@
 
                 // Global Keyboard Listener for Zero-Latency Flow
                 window.addEventListener('keydown', (e) => {
+                    if (activeAppMode !== 'speed') return;
                     if (state.view === 'arena' && state.session.active) {
                         if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
@@ -2001,7 +2698,1054 @@
                 `).join('');
             }
 
-            init();
+
+            // =========================================================================
+            // ==================== MEMORY CHALLENGE MODULE ============================
+            // =========================================================================
+
+            let activeAppMode = 'speed'; // 'speed' | 'memory'
+            const MEMORY_STORAGE_KEY = 'quantpulse_memory_challenge_v1';
+
+            const memState = {
+                view: 'setup', // 'setup' | 'arena' | 'summary'
+                config: {
+                    direction: 'forward', // 'forward' | 'reverse' | 'random'
+                    displayMode: 'all', // 'all' | 'sequential' | 'grid'
+                    duration: 2.0, // seconds for display (1.2, 2.0, 3.0)
+                    startSpan: 3, // 3, 4, 5
+                    penalty: 'drop', // 'drop' | 'lives' | 'reset'
+                    autoAdvance: true,
+                    sound: true
+                },
+                session: {
+                    active: false,
+                    phase: 'ready', // 'ready' | 'flash' | 'input' | 'feedback'
+                    currentSpan: 3,
+                    currentRound: 1,
+                    score: 0,
+                    streak: 0,
+                    bestStreak: 0,
+                    maxSpanAchieved: 3,
+                    livesRemaining: 3,
+                    currentSequence: [], // e.g. [7, 4, 2, 9]
+                    currentDirection: 'forward', // 'forward' | 'reverse'
+                    targetAnswer: '', // e.g. '7429' or '9247'
+                    userInput: '', // typed digits
+                    flashTimeout: null,
+                    roundStartTime: 0,
+                    roundsHistory: [] // { round, span, direction, sequence, target, userAns, correct, timeTaken }
+                }
+            };
+
+            const memViews = {
+                setup: document.getElementById('memSetupView'),
+                arena: document.getElementById('memArenaView'),
+                summary: document.getElementById('memSummaryView')
+            };
+
+            const memEls = {
+                // App containers & tabs
+                speedDrillApp: document.getElementById('speedDrillApp'),
+                memoryApp: document.getElementById('memoryApp'),
+                tabSpeedDrill: document.getElementById('tabSpeedDrill'),
+                tabMemoryChallenge: document.getElementById('tabMemoryChallenge'),
+                navStatLabel1: document.getElementById('navStatLabel1'),
+                navStatLabel2: document.getElementById('navStatLabel2'),
+                navBestQpm: document.getElementById('navBestQpm'),
+                navBestScore: document.getElementById('navBestScore'),
+                // Setup
+                directionBtns: document.querySelectorAll('#memDirectionControl .seg-btn'),
+                memDirectionHint: document.getElementById('memDirectionHint'),
+                displayBtns: document.querySelectorAll('#memDisplayModeControl .seg-btn'),
+                durationBtns: document.querySelectorAll('#memDurationControl .seg-btn'),
+                durationBadge: document.getElementById('memDurationBadge'),
+                startSpanBtns: document.querySelectorAll('#memStartSpanControl .seg-btn'),
+                startSpanBadge: document.getElementById('memStartSpanBadge'),
+                penaltyBtns: document.querySelectorAll('#memPenaltyControl .seg-btn'),
+                autoAdvanceToggle: document.getElementById('memAutoAdvanceToggle'),
+                audioToggle: document.getElementById('memAudioToggle'),
+                startMemoryBtn: document.getElementById('startMemoryBtn'),
+                memHistoryContainer: document.getElementById('memHistoryContainer'),
+                clearMemoryHistoryBtn: document.getElementById('clearMemoryHistoryBtn'),
+                // Arena
+                memHudSpan: document.getElementById('memHudSpan'),
+                memHudDirection: document.getElementById('memHudDirection'),
+                memHudScore: document.getElementById('memHudScore'),
+                memHudStatusLabel: document.getElementById('memHudStatusLabel'),
+                memHudStatus: document.getElementById('memHudStatus'),
+                memArenaProgress: document.getElementById('memArenaProgress'),
+                memProblemStage: document.getElementById('memProblemStage'),
+                memFeedbackBanner: document.getElementById('memFeedbackBanner'),
+                memStageBody: document.getElementById('memStageBody'),
+                memAnswerInput: document.getElementById('memAnswerInput'),
+                memInputWrap: document.getElementById('memInputWrap'),
+                memOnScreenNumpad: document.getElementById('memOnScreenNumpad'),
+                abortMemoryBtn: document.getElementById('abortMemoryBtn'),
+                // Summary
+                memSummarySubheader: document.getElementById('memSummarySubheader'),
+                memSumPeakSpan: document.getElementById('memSumPeakSpan'),
+                memSumScore: document.getElementById('memSumScore'),
+                memSumAccuracy: document.getElementById('memSumAccuracy'),
+                memSumStreak: document.getElementById('memSumStreak'),
+                memAssessmentTitle: document.getElementById('memAssessmentTitle'),
+                memAssessmentDesc: document.getElementById('memAssessmentDesc'),
+                memAssessmentBadge: document.getElementById('memAssessmentBadge'),
+                memAssessmentIcon: document.getElementById('memAssessmentIcon'),
+                memMistakeCountBadge: document.getElementById('memMistakeCountBadge'),
+                memMistakeTableContainer: document.getElementById('memMistakeTableContainer'),
+                memReconfigureBtn: document.getElementById('memReconfigureBtn'),
+                memRetryBtn: document.getElementById('memRetryBtn')
+            };
+
+            // --- Web Audio Synthesizer ---
+            let memAudioCtx = null;
+            function playMemSound(type) {
+                if (!memState.config.sound) return;
+                try {
+                    if (!memAudioCtx) {
+                        memAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (memAudioCtx.state === 'suspended') {
+                        memAudioCtx.resume();
+                    }
+                    const now = memAudioCtx.currentTime;
+                    const osc = memAudioCtx.createOscillator();
+                    const gain = memAudioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(memAudioCtx.destination);
+
+                    if (type === 'tick') {
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(540, now);
+                        gain.gain.setValueAtTime(0.08, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                        osc.start(now);
+                        osc.stop(now + 0.08);
+                    } else if (type === 'flash') {
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(440, now);
+                        gain.gain.setValueAtTime(0.12, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+                        osc.start(now);
+                        osc.stop(now + 0.14);
+                    } else if (type === 'success') {
+                        // Uplifting major arpeggio
+                        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                            const subOsc = memAudioCtx.createOscillator();
+                            const subGain = memAudioCtx.createGain();
+                            subOsc.connect(subGain);
+                            subGain.connect(memAudioCtx.destination);
+                            subOsc.type = 'sine';
+                            subOsc.frequency.setValueAtTime(freq, now + i * 0.07);
+                            subGain.gain.setValueAtTime(0.12, now + i * 0.07);
+                            subGain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.18);
+                            subOsc.start(now + i * 0.07);
+                            subOsc.stop(now + i * 0.07 + 0.2);
+                        });
+                    } else if (type === 'error') {
+                        // Low warning buzz
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(160, now);
+                        osc.frequency.linearRampToValueAtTime(110, now + 0.24);
+                        gain.gain.setValueAtTime(0.14, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+                        osc.start(now);
+                        osc.stop(now + 0.26);
+                    }
+                } catch (e) {
+                    // Audio context blocked or unsupported
+                }
+            }
+
+            // --- Top Level Mode Switcher ---
+            function setAppMode(mode) {
+                activeAppMode = mode;
+                if (mode === 'speed') {
+                    if (memState.session.active) memEndSession();
+                    memEls.speedDrillApp.style.display = 'block';
+                    memEls.memoryApp.style.display = 'none';
+                    memEls.tabSpeedDrill.classList.add('active');
+                    memEls.tabSpeedDrill.setAttribute('aria-selected', 'true');
+                    memEls.tabMemoryChallenge.classList.remove('active');
+                    memEls.tabMemoryChallenge.setAttribute('aria-selected', 'false');
+                    memEls.navStatLabel1.textContent = 'Best QPM:';
+                    memEls.navStatLabel2.textContent = 'Best Score:';
+                    renderHistory();
+                    if (state.view === 'arena') els.answerInput.focus();
+                } else {
+                    if (state.session.active) endSession();
+                    memEls.speedDrillApp.style.display = 'none';
+                    memEls.memoryApp.style.display = 'block';
+                    memEls.tabSpeedDrill.classList.remove('active');
+                    memEls.tabSpeedDrill.setAttribute('aria-selected', 'false');
+                    memEls.tabMemoryChallenge.classList.add('active');
+                    memEls.tabMemoryChallenge.setAttribute('aria-selected', 'true');
+                    memEls.navStatLabel1.textContent = 'Peak Span:';
+                    memEls.navStatLabel2.textContent = 'Best Score:';
+                    renderMemoryHistory();
+                    if (memState.view === 'arena' && memState.session.phase === 'input') {
+                        memEls.memAnswerInput.focus();
+                    }
+                }
+            }
+
+            function memSwitchView(target) {
+                memState.view = target;
+                Object.keys(memViews).forEach(k => {
+                    memViews[k].classList.toggle('active', k === target);
+                });
+                if (target === 'arena' && memState.session.phase === 'input') {
+                    setTimeout(() => memEls.memAnswerInput.focus(), 25);
+                }
+            }
+
+            // --- Sequence Generator ---
+            function generateDigitSequence(length) {
+                const seq = [];
+                for (let i = 0; i < length; i++) {
+                    let d;
+                    do {
+                        d = Math.floor(Math.random() * 10);
+                    } while (i > 0 && d === seq[i - 1]); // Avoid immediate consecutive duplicates like 7,7
+                    seq.push(d);
+                }
+                return seq;
+            }
+
+            // --- Memory Session Lifecycle ---
+            function startMemorySession() {
+                const s = memState.session;
+                s.active = true;
+                s.currentSpan = memState.config.startSpan;
+                s.currentRound = 1;
+                s.score = 0;
+                s.streak = 0;
+                s.bestStreak = 0;
+                s.maxSpanAchieved = memState.config.startSpan;
+                s.livesRemaining = 3;
+                s.roundsHistory = [];
+
+                memSwitchView('arena');
+                memStartRound();
+            }
+
+            function memStartRound() {
+                const s = memState.session;
+                if (!s.active) return;
+                s.phase = 'ready';
+                s.userInput = '';
+                if (memEls.memAnswerInput) memEls.memAnswerInput.value = '';
+
+                // Determine recall direction for this round
+                if (memState.config.direction === 'random') {
+                    s.currentDirection = Math.random() < 0.5 ? 'forward' : 'reverse';
+                } else {
+                    s.currentDirection = memState.config.direction;
+                }
+
+                s.currentSequence = generateDigitSequence(s.currentSpan);
+                if (s.currentDirection === 'forward') {
+                    s.targetAnswer = s.currentSequence.join('');
+                } else {
+                    s.targetAnswer = s.currentSequence.slice().reverse().join('');
+                }
+
+                memUpdateHud();
+
+                // Ready Phase: brief preparation countdown (550ms)
+                memEls.memFeedbackBanner.className = 'feedback-banner';
+                memEls.memFeedbackBanner.innerHTML = '&nbsp;';
+                memEls.memProblemStage.classList.remove('flash-correct', 'flash-wrong');
+                memEls.memInputWrap.style.display = 'none';
+
+                memEls.memArenaProgress.style.transition = 'none';
+                memEls.memArenaProgress.style.width = '100%';
+
+                const isRev = s.currentDirection === 'reverse';
+                const dirTitle = isRev ? '🔄 REVERSE RECALL' : '➡️ FORWARD RECALL';
+                memEls.memStageBody.innerHTML = `
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Get Ready...</div>
+                    <div style="font-size: 2.4rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent);">Level ${s.currentRound}</div>
+                    <div style="font-size: 0.9rem; color: ${isRev ? '#fbbf24' : 'var(--accent)'}; font-weight: 600; margin-top: 0.4rem;">${dirTitle} (${s.currentSpan} Digits)</div>
+                `;
+
+                playMemSound('tick');
+
+                s.flashTimeout = setTimeout(() => {
+                    if (!s.active) return;
+                    memTriggerFlashPhase();
+                }, 550);
+            }
+
+            function memTriggerFlashPhase() {
+                const s = memState.session;
+                s.phase = 'flash';
+                const durationMs = Math.round(memState.config.duration * 1000);
+
+                // Draining progress bar
+                memEls.memArenaProgress.style.transition = `width ${durationMs}ms linear`;
+                memEls.memArenaProgress.style.width = '0%';
+
+                if (memState.config.displayMode === 'all') {
+                    // All digits displayed simultaneously
+                    const cardsHtml = s.currentSequence.map(d => `<div class="mem-card">${d}</div>`).join('');
+                    memEls.memStageBody.innerHTML = `
+                        <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem;">Memorize Sequence</div>
+                        <div class="mem-cards-container">${cardsHtml}</div>
+                    `;
+                    playMemSound('flash');
+
+                    s.flashTimeout = setTimeout(() => {
+                        if (!s.active) return;
+                        memTriggerInputPhase();
+                    }, durationMs);
+
+                } else if (memState.config.displayMode === 'sequential') {
+                    // Display digits one by one
+                    let idx = 0;
+                    const stepMs = Math.max(450, Math.floor(durationMs / s.currentSpan));
+
+                    function showSeqDigit() {
+                        if (!s.active) return;
+                        if (idx >= s.currentSequence.length) {
+                            memTriggerInputPhase();
+                            return;
+                        }
+
+                        const digit = s.currentSequence[idx];
+                        const dotsHtml = s.currentSequence.map((_, i) => `
+                            <div class="mem-seq-dot ${i === idx ? 'active' : (i < idx ? 'done' : '')}"></div>
+                        `).join('');
+
+                        memEls.memStageBody.innerHTML = `
+                            <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.3rem;">Digit ${idx + 1} of ${s.currentSpan}</div>
+                            <div class="mem-single-card-wrap">
+                                <div class="mem-single-card">${digit}</div>
+                                <div class="mem-seq-dots">${dotsHtml}</div>
+                            </div>
+                        `;
+                        playMemSound('tick');
+
+                        idx++;
+                        s.flashTimeout = setTimeout(showSeqDigit, stepMs);
+                    }
+
+                    showSeqDigit();
+
+                } else if (memState.config.displayMode === 'grid') {
+                    // Spatial 3x3 Grid Matrix
+                    const cellCount = 9;
+                    const indices = [];
+                    while (indices.length < s.currentSpan && indices.length < cellCount) {
+                        const r = Math.floor(Math.random() * cellCount);
+                        if (!indices.includes(r)) indices.push(r);
+                    }
+
+                    let cellsHtml = '';
+                    for (let i = 0; i < cellCount; i++) {
+                        const digitIdx = indices.indexOf(i);
+                        if (digitIdx !== -1) {
+                            cellsHtml += `<div class="mem-matrix-cell lit">${s.currentSequence[digitIdx]}</div>`;
+                        } else {
+                            cellsHtml += `<div class="mem-matrix-cell" style="opacity: 0.35;">•</div>`;
+                        }
+                    }
+
+                    memEls.memStageBody.innerHTML = `
+                        <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem;">Spatial Memory Grid</div>
+                        <div class="mem-matrix-grid">${cellsHtml}</div>
+                    `;
+                    playMemSound('flash');
+
+                    s.flashTimeout = setTimeout(() => {
+                        if (!s.active) return;
+                        memTriggerInputPhase();
+                    }, durationMs);
+                }
+            }
+
+            function memTriggerInputPhase() {
+                const s = memState.session;
+                s.phase = 'input';
+                s.userInput = '';
+                s.roundStartTime = performance.now();
+
+                // Numbers disappear! Input field and digit slots appear
+                memEls.memArenaProgress.style.transition = 'none';
+                memEls.memArenaProgress.style.width = '100%';
+
+                const isReverse = s.currentDirection === 'reverse';
+                const dirBadge = isReverse ? `
+                    <div class="mem-direction-badge reverse" style="margin-bottom: 0.75rem;">
+                        🔄 REVERSE ORDER: Type digits from LAST to FIRST!
+                    </div>
+                ` : `
+                    <div class="mem-direction-badge forward" style="margin-bottom: 0.75rem;">
+                        ➡️ FORWARD ORDER: Type digits in exact same sequence!
+                    </div>
+                `;
+
+                // Render digit slots
+                const slotsHtml = Array.from({ length: s.currentSpan }).map((_, i) => `
+                    <div class="mem-slot ${i === 0 ? 'current' : ''}" id="memSlot_${i}"></div>
+                `).join('');
+
+                memEls.memStageBody.innerHTML = `
+                    ${dirBadge}
+                    <div class="mem-slots-wrap" id="memSlotsWrap">${slotsHtml}</div>
+                    <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        ${isReverse ? 'Reverse digit span recall activates working memory manipulation' : 'Standard digit span sequential recall'}
+                    </div>
+                `;
+
+                // Show hidden input and focus
+                memEls.memInputWrap.style.display = 'block';
+                memEls.memAnswerInput.value = '';
+                memEls.memAnswerInput.focus();
+            }
+
+            function memUpdateHud() {
+                const s = memState.session;
+                memEls.memHudSpan.textContent = `Level ${s.currentRound} (${s.currentSpan} Digits)`;
+
+                if (s.currentDirection === 'reverse') {
+                    memEls.memHudDirection.innerHTML = `<span style="color: #fbbf24;">🔄 Reverse</span>`;
+                } else {
+                    memEls.memHudDirection.innerHTML = `<span style="color: var(--accent);">➡️ Forward</span>`;
+                }
+
+                memEls.memHudScore.textContent = `${s.score} pts (${s.streak} 🔥)`;
+
+                if (memState.config.penalty === 'lives') {
+                    memEls.memHudStatusLabel.textContent = 'Lives Left';
+                    memEls.memHudStatus.innerHTML = '❤️'.repeat(Math.max(0, s.livesRemaining)) || '💀';
+                } else if (memState.config.penalty === 'drop') {
+                    memEls.memHudStatusLabel.textContent = 'Penalty Rule';
+                    memEls.memHudStatus.textContent = '📉 Drop -1';
+                } else {
+                    memEls.memHudStatusLabel.textContent = 'Penalty Rule';
+                    memEls.memHudStatus.textContent = '🔄 Full Reset';
+                }
+            }
+
+            function memHandleDigitInput(digitStr) {
+                const s = memState.session;
+                if (s.phase !== 'input') return;
+
+                if (/^[0-9]$/.test(digitStr)) {
+                    if (s.userInput.length < s.currentSpan) {
+                        s.userInput += digitStr;
+                        playMemSound('tick');
+                        memSyncSlots();
+
+                        if (s.userInput.length === s.currentSpan && memState.config.autoAdvance) {
+                            setTimeout(() => {
+                                memSubmitAnswer();
+                            }, 130);
+                        }
+                    }
+                }
+            }
+
+            function memHandleBackspace() {
+                const s = memState.session;
+                if (s.phase !== 'input') return;
+                if (s.userInput.length > 0) {
+                    s.userInput = s.userInput.slice(0, -1);
+                    memSyncSlots();
+                }
+            }
+
+            function memHandleClear() {
+                const s = memState.session;
+                if (s.phase !== 'input') return;
+                s.userInput = '';
+                memSyncSlots();
+            }
+
+            function memSyncSlots() {
+                const s = memState.session;
+                for (let i = 0; i < s.currentSpan; i++) {
+                    const slotEl = document.getElementById(`memSlot_${i}`);
+                    if (!slotEl) continue;
+                    if (i < s.userInput.length) {
+                        slotEl.textContent = s.userInput[i];
+                        slotEl.className = 'mem-slot filled';
+                    } else if (i === s.userInput.length) {
+                        slotEl.textContent = '';
+                        slotEl.className = 'mem-slot current';
+                    } else {
+                        slotEl.textContent = '';
+                        slotEl.className = 'mem-slot';
+                    }
+                }
+                if (memEls.memAnswerInput) {
+                    memEls.memAnswerInput.value = s.userInput;
+                }
+            }
+
+            function memSubmitAnswer() {
+                const s = memState.session;
+                if (s.phase !== 'input') return;
+                if (s.userInput.length === 0) return;
+
+                s.phase = 'feedback';
+                const timeTaken = ((performance.now() - s.roundStartTime) / 1000).toFixed(2);
+                const isCorrect = (s.userInput === s.targetAnswer);
+
+                if (isCorrect) {
+                    memHandleSuccess(s.userInput, timeTaken);
+                } else {
+                    memHandleMistake(s.userInput, timeTaken);
+                }
+            }
+
+            function memHandleSuccess(userTyped, timeTaken) {
+                const s = memState.session;
+                playMemSound('success');
+
+                memEls.memProblemStage.classList.remove('flash-correct', 'flash-wrong');
+                void memEls.memProblemStage.offsetWidth;
+                memEls.memProblemStage.classList.add('flash-correct');
+
+                for (let i = 0; i < s.currentSpan; i++) {
+                    const slot = document.getElementById(`memSlot_${i}`);
+                    if (slot) slot.className = 'mem-slot correct-slot';
+                }
+
+                const pts = s.currentSpan * 100 + (s.streak + 1) * 25;
+                s.score += pts;
+                s.streak++;
+                if (s.streak > s.bestStreak) s.bestStreak = s.streak;
+
+                memEls.memFeedbackBanner.textContent = `✓ Perfect! Level Up: Span ${s.currentSpan} ➔ ${s.currentSpan + 1} (+${pts} pts)`;
+                memEls.memFeedbackBanner.className = 'feedback-banner show ok';
+
+                s.roundsHistory.push({
+                    round: s.currentRound,
+                    span: s.currentSpan,
+                    direction: s.currentDirection,
+                    sequence: s.currentSequence.join(' '),
+                    target: s.targetAnswer,
+                    userAns: userTyped,
+                    correct: true,
+                    timeTaken
+                });
+
+                // Progression: increase digit length by 1!
+                s.currentSpan++;
+                if (s.currentSpan > s.maxSpanAchieved) {
+                    s.maxSpanAchieved = s.currentSpan;
+                }
+                s.currentRound++;
+
+                memUpdateHud();
+
+                s.flashTimeout = setTimeout(() => {
+                    if (!s.active) return;
+                    memStartRound();
+                }, 1250);
+            }
+
+            function memHandleMistake(userTyped, timeTaken) {
+                const s = memState.session;
+                playMemSound('error');
+
+                memEls.memProblemStage.classList.remove('flash-correct', 'flash-wrong');
+                void memEls.memProblemStage.offsetWidth;
+                memEls.memProblemStage.classList.add('flash-wrong');
+
+                for (let i = 0; i < s.currentSpan; i++) {
+                    const slot = document.getElementById(`memSlot_${i}`);
+                    if (slot) {
+                        const isCharMatch = (i < userTyped.length && userTyped[i] === s.targetAnswer[i]);
+                        slot.className = `mem-slot ${isCharMatch ? 'correct-slot' : 'wrong-slot'}`;
+                    }
+                }
+
+                memEls.memFeedbackBanner.textContent = `✗ Sequence Mismatch!`;
+                memEls.memFeedbackBanner.className = 'feedback-banner show error';
+
+                s.streak = 0;
+
+                s.roundsHistory.push({
+                    round: s.currentRound,
+                    span: s.currentSpan,
+                    direction: s.currentDirection,
+                    sequence: s.currentSequence.join(' '),
+                    target: s.targetAnswer,
+                    userAns: userTyped,
+                    correct: false,
+                    timeTaken
+                });
+
+                // Render Detailed Mistake Reveal Box
+                const dirLabel = s.currentDirection === 'reverse' ? 'Target (Reverse)' : 'Target (Forward)';
+                memEls.memStageBody.innerHTML = `
+                    <div class="mem-mistake-card">
+                        <div class="mem-mistake-row">
+                            <span class="mem-mistake-label">Flashed Sequence:</span>
+                            <span class="mem-mistake-value seq">${s.currentSequence.join('  ')}</span>
+                        </div>
+                        <div class="mem-mistake-row">
+                            <span class="mem-mistake-label">${dirLabel}:</span>
+                            <span class="mem-mistake-value target">${s.targetAnswer.split('').join('  ')}</span>
+                        </div>
+                        <div class="mem-mistake-row">
+                            <span class="mem-mistake-label">Your Input:</span>
+                            <span class="mem-mistake-value user">${userTyped.split('').join('  ')}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+                        <button type="button" class="btn-primary" id="memNextRoundBtn" style="width: auto; padding: 0.6rem 1.4rem; font-size: 0.9rem;">
+                            Continue (${memState.config.penalty === 'lives' && s.livesRemaining <= 1 ? 'View Summary' : 'Next Round'}) (Enter)
+                        </button>
+                    </div>
+                `;
+
+                // Progression / Penalty
+                let isGameOver = false;
+                if (memState.config.penalty === 'lives') {
+                    s.livesRemaining--;
+                    if (s.livesRemaining <= 0) {
+                        isGameOver = true;
+                    } else {
+                        s.currentSpan = Math.max(memState.config.startSpan, s.currentSpan - 1);
+                    }
+                } else if (memState.config.penalty === 'drop') {
+                    s.currentSpan = Math.max(memState.config.startSpan, s.currentSpan - 1);
+                } else if (memState.config.penalty === 'reset') {
+                    s.currentSpan = memState.config.startSpan;
+                }
+
+                s.currentRound++;
+                memUpdateHud();
+
+                const nextBtn = document.getElementById('memNextRoundBtn');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        if (isGameOver) {
+                            memEndSession();
+                        } else {
+                            memStartRound();
+                        }
+                    });
+                }
+
+                // Auto-advance after 3.2 seconds if user doesn't click
+                s.flashTimeout = setTimeout(() => {
+                    if (!s.active || s.phase !== 'feedback') return;
+                    if (isGameOver) {
+                        memEndSession();
+                    } else {
+                        memStartRound();
+                    }
+                }, 3200);
+            }
+
+            function memEndSession() {
+                const s = memState.session;
+                s.active = false;
+                if (s.flashTimeout) clearTimeout(s.flashTimeout);
+
+                const totalRounds = s.roundsHistory.length;
+                const correctRounds = s.roundsHistory.filter(r => r.correct).length;
+                const accuracy = totalRounds > 0 ? Math.round((correctRounds / totalRounds) * 100) : 100;
+                const peakSpan = s.maxSpanAchieved;
+
+                // Evaluate Working Memory Assessment
+                let assessment = {
+                    title: 'Standard Working Memory',
+                    desc: "Solid digit recall ability (Miller's Law: 7 ± 2 items).",
+                    badge: 'Level 1: Good',
+                    icon: '🧠'
+                };
+                if (peakSpan >= 10) {
+                    assessment = {
+                        title: 'Exceptional Cognitive Capacity',
+                        desc: 'Phenomenal working memory span placing in the top 1% of cognitive performers.',
+                        badge: 'Grandmaster (10+ Digits)',
+                        icon: '👑'
+                    };
+                } else if (peakSpan >= 8) {
+                    assessment = {
+                        title: 'High Working Memory Span',
+                        desc: 'Significantly above average capacity for holding and manipulating mental tokens.',
+                        badge: 'Advanced (8-9 Digits)',
+                        icon: '⚡'
+                    };
+                } else if (peakSpan >= 6) {
+                    assessment = {
+                        title: 'Solid Cognitive Span',
+                        desc: 'Well within standard working memory range for quantitative analysis.',
+                        badge: 'Proficient (6-7 Digits)',
+                        icon: '🎯'
+                    };
+                } else {
+                    assessment = {
+                        title: 'Developing Working Memory',
+                        desc: 'Consistent daily practice will expand your active recall capacity.',
+                        badge: 'Developing (3-5 Digits)',
+                        icon: '🌱'
+                    };
+                }
+
+                memEls.memAssessmentTitle.textContent = assessment.title;
+                memEls.memAssessmentDesc.textContent = assessment.desc;
+                memEls.memAssessmentBadge.textContent = assessment.badge;
+                memEls.memAssessmentIcon.textContent = assessment.icon;
+
+                // Summary values
+                memEls.memSumPeakSpan.textContent = `${peakSpan} Digits`;
+                memEls.memSumScore.textContent = `${s.score} pts`;
+                memEls.memSumAccuracy.textContent = `${accuracy}% (${correctRounds}/${totalRounds})`;
+                memEls.memSumStreak.textContent = `${s.bestStreak} 🔥`;
+
+                const dirNames = {
+                    forward: 'Forward Order',
+                    reverse: 'Reverse (Backwards) Order',
+                    random: 'Randomized Mixed Order'
+                };
+                memEls.memSummarySubheader.textContent = `Memory Challenge • Mode: ${dirNames[memState.config.direction]} • Peak Span: ${peakSpan} Digits`;
+                memEls.memMistakeCountBadge.textContent = `${totalRounds - correctRounds} Missed`;
+
+                memRenderReviewTable(s.roundsHistory);
+
+                // Save session record
+                if (totalRounds > 0) {
+                    saveMemoryRecord({
+                        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        peakSpan,
+                        score: s.score,
+                        accuracy,
+                        totalRounds,
+                        cleared: correctRounds,
+                        mode: dirNames[memState.config.direction]
+                    });
+                }
+
+                memSwitchView('summary');
+            }
+
+            function memRenderReviewTable(history) {
+                if (history.length === 0) {
+                    memEls.memMistakeTableContainer.innerHTML = `
+                        <div class="empty-state">No rounds played in this challenge session.</div>
+                    `;
+                    return;
+                }
+
+                let rows = history.map((h, idx) => `
+                    <tr>
+                        <td class="mono">${idx + 1}</td>
+                        <td class="mono"><span style="color: var(--accent); font-weight: 700;">${h.span} Digits</span></td>
+                        <td class="mono"><span class="badge-tag">${h.direction === 'reverse' ? '🔄 Reverse' : '➡️ Forward'}</span></td>
+                        <td class="mono" style="letter-spacing: 0.1em;">${h.sequence}</td>
+                        <td class="mono" style="letter-spacing: 0.1em;"><span class="badge-correct">${h.target}</span></td>
+                        <td class="mono" style="letter-spacing: 0.1em;">
+                            <span class="${h.correct ? 'badge-correct' : 'badge-wrong'}">${h.userAns || '—'}</span>
+                        </td>
+                        <td class="mono">
+                            ${h.correct ? '<span style="color: var(--success); font-weight: 700;">✓ Cleared</span>' : '<span style="color: var(--danger); font-weight: 700;">✗ Missed</span>'}
+                        </td>
+                    </tr>
+                `).join('');
+
+                memEls.memMistakeTableContainer.innerHTML = `
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Span</th>
+                                    <th>Recall Mode</th>
+                                    <th>Sequence Shown</th>
+                                    <th>Target Answer</th>
+                                    <th>Your Input</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            // --- LocalStorage for Memory Challenge ---
+            function getStoredMemoryData() {
+                try {
+                    const raw = localStorage.getItem(MEMORY_STORAGE_KEY);
+                    if (!raw) return { bestSpan: 0, bestScore: 0, history: [] };
+                    return JSON.parse(raw);
+                } catch (e) {
+                    return { bestSpan: 0, bestScore: 0, history: [] };
+                }
+            }
+
+            function saveMemoryRecord(record) {
+                const data = getStoredMemoryData();
+                if (record.peakSpan > (data.bestSpan || 0)) data.bestSpan = record.peakSpan;
+                if (record.score > (data.bestScore || 0)) data.bestScore = record.score;
+                data.history.unshift(record);
+                if (data.history.length > 15) data.history.pop();
+                try {
+                    localStorage.setItem(MEMORY_STORAGE_KEY, JSON.stringify(data));
+                } catch (e) {}
+                renderMemoryHistory();
+            }
+
+            function renderMemoryHistory() {
+                const data = getStoredMemoryData();
+                if (activeAppMode === 'memory') {
+                    memEls.navBestQpm.textContent = `${data.bestSpan || 0} Digits`;
+                    memEls.navBestScore.textContent = `${data.bestScore || 0}`;
+                }
+
+                if (!data.history || data.history.length === 0) {
+                    memEls.memHistoryContainer.innerHTML = `
+                        <div class="empty-state">
+                            No memory sessions completed yet. Launch a challenge to test your digit span!
+                        </div>
+                    `;
+                    return;
+                }
+
+                memEls.memHistoryContainer.innerHTML = data.history.map(item => `
+                    <div class="history-item">
+                        <div class="history-meta">
+                            <span class="history-mode">${item.mode} (${item.peakSpan} Digits Peak)</span>
+                            <span class="history-date">Today at ${item.date}</span>
+                        </div>
+                        <div class="history-metrics">
+                            <span style="color: var(--accent); font-weight: 700;">${item.score} pts</span>
+                            <span>${item.cleared}/${item.totalRounds} (${item.accuracy}%)</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function applyMemoryPreset(preset) {
+                if (preset === 'forward-easy') {
+                    memState.config.direction = 'forward';
+                    memState.config.displayMode = 'all';
+                    memState.config.duration = 2.0;
+                    memState.config.startSpan = 3;
+                    memState.config.penalty = 'drop';
+                } else if (preset === 'forward-standard') {
+                    memState.config.direction = 'forward';
+                    memState.config.displayMode = 'all';
+                    memState.config.duration = 2.0;
+                    memState.config.startSpan = 4;
+                    memState.config.penalty = 'drop';
+                } else if (preset === 'reverse-master') {
+                    memState.config.direction = 'reverse';
+                    memState.config.displayMode = 'all';
+                    memState.config.duration = 2.0;
+                    memState.config.startSpan = 4;
+                    memState.config.penalty = 'drop';
+                } else if (preset === 'matrix-grid') {
+                    memState.config.direction = 'forward';
+                    memState.config.displayMode = 'grid';
+                    memState.config.duration = 2.0;
+                    memState.config.startSpan = 3;
+                    memState.config.penalty = 'drop';
+                } else if (preset === 'alternating-pro') {
+                    memState.config.direction = 'random';
+                    memState.config.displayMode = 'sequential';
+                    memState.config.duration = 1.2;
+                    memState.config.startSpan = 4;
+                    memState.config.penalty = 'lives';
+                }
+
+                // Sync UI buttons
+                memEls.directionBtns.forEach(b => b.classList.toggle('active', b.dataset.direction === memState.config.direction));
+                memEls.displayBtns.forEach(b => b.classList.toggle('active', b.dataset.display === memState.config.displayMode));
+                memEls.durationBtns.forEach(b => b.classList.toggle('active', parseFloat(b.dataset.duration) === memState.config.duration));
+                memEls.durationBadge.textContent = `${memState.config.duration.toFixed(1)}s`;
+                memEls.startSpanBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.span, 10) === memState.config.startSpan));
+                memEls.startSpanBadge.textContent = `${memState.config.startSpan} Digits`;
+                memEls.penaltyBtns.forEach(b => b.classList.toggle('active', b.dataset.penalty === memState.config.penalty));
+
+                updateDirectionHint();
+            }
+
+            function updateDirectionHint() {
+                const hints = {
+                    forward: 'Type digits in the exact same sequence they appeared (e.g. 7 4 2 ➔ 742).',
+                    reverse: '⚠️ REVERSE ORDER: Type digits from LAST to FIRST (e.g. 7 4 2 ➔ 247).',
+                    random: '🎲 Alternating challenge: Forward or Reverse will be randomized each round!'
+                };
+                memEls.memDirectionHint.textContent = hints[memState.config.direction];
+            }
+
+            // --- Event Bindings for Memory Challenge ---
+            function bindMemoryEvents() {
+                // Top Mode Switcher Tabs
+                memEls.tabSpeedDrill.addEventListener('click', () => setAppMode('speed'));
+                memEls.tabMemoryChallenge.addEventListener('click', () => setAppMode('memory'));
+
+                // Direction selector
+                memEls.directionBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        memEls.directionBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        memState.config.direction = btn.dataset.direction;
+                        updateDirectionHint();
+                    });
+                });
+
+                // Display mode selector
+                memEls.displayBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        memEls.displayBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        memState.config.displayMode = btn.dataset.display;
+                    });
+                });
+
+                // Duration selector
+                memEls.durationBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        memEls.durationBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        memState.config.duration = parseFloat(btn.dataset.duration);
+                        memEls.durationBadge.textContent = `${memState.config.duration.toFixed(1)}s`;
+                    });
+                });
+
+                // Starting span selector
+                memEls.startSpanBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        memEls.startSpanBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        memState.config.startSpan = parseInt(btn.dataset.span, 10);
+                        memEls.startSpanBadge.textContent = `${memState.config.startSpan} Digits`;
+                    });
+                });
+
+                // Penalty selector
+                memEls.penaltyBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        memEls.penaltyBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        memState.config.penalty = btn.dataset.penalty;
+                    });
+                });
+
+                // Toggles
+                memEls.autoAdvanceToggle.addEventListener('change', (e) => {
+                    memState.config.autoAdvance = e.target.checked;
+                });
+
+                memEls.audioToggle.addEventListener('change', (e) => {
+                    memState.config.sound = e.target.checked;
+                });
+
+                // Presets
+                document.querySelectorAll('.mem-preset-btn').forEach(btn => {
+                    btn.addEventListener('click', () => applyMemoryPreset(btn.dataset.memPreset));
+                });
+
+                // Navigation & Actions
+                memEls.startMemoryBtn.addEventListener('click', startMemorySession);
+                memEls.abortMemoryBtn.addEventListener('click', memEndSession);
+                memEls.memReconfigureBtn.addEventListener('click', () => memSwitchView('setup'));
+                memEls.memRetryBtn.addEventListener('click', startMemorySession);
+
+                memEls.clearMemoryHistoryBtn.addEventListener('click', () => {
+                    localStorage.removeItem(MEMORY_STORAGE_KEY);
+                    renderMemoryHistory();
+                });
+
+                // Hidden Input handler (for mobile & desktop sync)
+                memEls.memAnswerInput.addEventListener('input', () => {
+                    if (memState.session.phase !== 'input') {
+                        memEls.memAnswerInput.value = '';
+                        return;
+                    }
+                    const cleaned = memEls.memAnswerInput.value.replace(/[^0-9]/g, '').slice(0, memState.session.currentSpan);
+                    memState.session.userInput = cleaned;
+                    memSyncSlots();
+
+                    if (cleaned.length === memState.session.currentSpan && memState.config.autoAdvance) {
+                        setTimeout(() => {
+                            memSubmitAnswer();
+                        }, 130);
+                    }
+                });
+
+                // Touch / Mouse Numpad for Memory Arena
+                memEls.memOnScreenNumpad.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.num-key');
+                    if (!btn) return;
+                    const key = btn.dataset.memKey;
+                    if (!key || key.startsWith('NONE')) return;
+
+                    if (key === 'BACK') {
+                        memHandleBackspace();
+                    } else if (key === 'CLEAR') {
+                        memHandleClear();
+                    } else if (key === 'ENTER') {
+                        memSubmitAnswer();
+                    } else {
+                        memHandleDigitInput(key);
+                    }
+                    memEls.memAnswerInput.focus();
+                });
+
+                // Global Keyboard Listener for Memory Mode
+                window.addEventListener('keydown', (e) => {
+                    if (activeAppMode !== 'memory') return;
+
+                    if (memState.view === 'arena' && memState.session.active) {
+                        if (memState.session.phase === 'input') {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                memSubmitAnswer();
+                            } else if (e.key === 'Escape') {
+                                e.preventDefault();
+                                memEndSession();
+                            } else if (e.key === 'Backspace') {
+                                if (document.activeElement !== memEls.memAnswerInput) {
+                                    e.preventDefault();
+                                    memHandleBackspace();
+                                }
+                            } else if (/^[0-9]$/.test(e.key)) {
+                                if (document.activeElement !== memEls.memAnswerInput) {
+                                    e.preventDefault();
+                                    memHandleDigitInput(e.key);
+                                }
+                            }
+                        } else if (memState.session.phase === 'feedback') {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                const nextBtn = document.getElementById('memNextRoundBtn');
+                                if (nextBtn) nextBtn.click();
+                            } else if (e.key === 'Escape') {
+                                e.preventDefault();
+                                memEndSession();
+                            }
+                        }
+                    } else if (memState.view === 'setup' && e.key === 'Enter') {
+                        if (document.activeElement.tagName !== 'INPUT') {
+                            e.preventDefault();
+                            startMemorySession();
+                        }
+                    } else if (memState.view === 'summary' && e.key === 'Enter') {
+                        e.preventDefault();
+                        startMemorySession();
+                    }
+                });
+            }
+
+            // Initialize Both Modes
+            function fullAppInit() {
+                init();
+                bindMemoryEvents();
+                renderMemoryHistory();
+            }
+
+            fullAppInit();
         })();
     </script>
 </body>
